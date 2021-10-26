@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1057848052307",
+    "project_id": "container-tracker-148c3",
+    "storage_bucket": "container-tracker-148c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057848052307:android:8697823bdc38a0783354a6",
+        "android_client_info": {
+          "package_name": "com.example.google_map_i"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057848052307-52v88q2mfh9l3hfktgrgum9r3p5rbb4q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW3blnWzBUT_yCtgL6h4Ev-PSGAMcsYR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057848052307-52v88q2mfh9l3hfktgrgum9r3p5rbb4q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
