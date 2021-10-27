@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_map_i/models/container.dart';
+import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OperationScreen extends StatefulWidget {
@@ -10,6 +13,7 @@ class OperationScreen extends StatefulWidget {
 }
 
 class _OperationScreenState extends State<OperationScreen> {
+  OperationScreenViewModel _viewModel = Get.put(OperationScreenViewModel());
   static const _initialCameraPosition =
       CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 14);
 
@@ -25,13 +29,26 @@ class _OperationScreenState extends State<OperationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        markers: _markers,
-        onLongPress: _addMarker,
-        initialCameraPosition: _initialCameraPosition,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        onMapCreated: (controller) => _googleMapController = controller,
+      body: Column(
+        children: [
+          StreamBuilder<List<ContainerX>>(
+              stream: _viewModel.containers(),
+              builder: (context, asyncSnapshot) {
+                var data = asyncSnapshot.data;
+                print(data);
+                return Container(height: 200, color: Colors.yellowAccent);
+              }),
+          Expanded(
+            child: GoogleMap(
+              markers: _markers,
+              onLongPress: _addMarker,
+              initialCameraPosition: _initialCameraPosition,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              onMapCreated: (controller) => _googleMapController = controller,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: getContainerData(),
     );

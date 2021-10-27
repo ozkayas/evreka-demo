@@ -6,13 +6,18 @@ import 'package:google_map_i/operation/database_service.dart';
 class OperationScreenViewModel extends GetxController {
   final _db = DatabaseService();
 
-/*   List<ContainerX> containers() {
+  Stream<List<ContainerX>> containers() {
     var containers = _db.fetchContainers();
-    Stream<List<DocumentSnapshot>> containersStreamList =  containers.map((querySnapshot) => querySnapshot.docs);
-  
+    Stream<List<DocumentSnapshot>> streamListDocumentSnapshot =
+        containers.map((querySnapshot) => querySnapshot.docs);
 
     // document snapshottan ContainerX sinifina cevirim yapacak metot lazim
-    Stream<List<ContainerX>> stream containersStreamList.map((list) => null)
-  
-  } */
+    Stream<List<ContainerX>> streamListContainer = streamListDocumentSnapshot
+        .map((listDocumentSnapshot) => listDocumentSnapshot
+            .map((documentSnapshot) =>
+                ContainerX.fromJson(documentSnapshot as Map<String, dynamic>))
+            .toList());
+
+    return streamListContainer;
+  }
 }
