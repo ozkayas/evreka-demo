@@ -48,7 +48,7 @@ class ContainerX {
 
   Marker toMarker(Function onTap, BitmapDescriptor? icon) => Marker(
       markerId: MarkerId(this.id),
-      infoWindow: InfoWindow(title: this.id),
+      //infoWindow: InfoWindow(title: this.id),
       icon: icon ?? BitmapDescriptor.defaultMarker,
       position: LatLng(this.lat, this.long),
       onTap: () {
