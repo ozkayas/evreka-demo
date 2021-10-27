@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 ContainerX containerXFromJson(String str) =>
     ContainerX.fromJson(json.decode(str));
 
@@ -24,15 +26,22 @@ class ContainerX {
   String sensorId;
   int lastDataDate;
 
-  factory ContainerX.fromJson(Map<String, dynamic> json) => ContainerX(
-        id: json["id"],
-        lat: json["lat"].toDouble(),
-        long: json["long"].toDouble(),
-        fullnessRate: json["fullnessRate"].toDouble(),
-        temperature: json["temperature"],
-        sensorId: json["sensorId"],
-        lastDataDate: json["lastDataDate"],
-      );
+  factory ContainerX.fromJson(Map<String, dynamic> json) {
+    // json field names should me defined outside
+
+    GeoPoint _position = json['position'];
+    Timestamp _timestamp = json['lastDataDate'];
+
+    return ContainerX(
+      id: json["id"],
+      lat: _position.latitude,
+      long: _position.longitude,
+      fullnessRate: json["fullnessRate"].toDouble(),
+      temperature: json["temperature"],
+      sensorId: json["sensorId"],
+      lastDataDate: _timestamp.millisecondsSinceEpoch,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,
