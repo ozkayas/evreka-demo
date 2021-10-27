@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 ContainerX containerXFromJson(String str) =>
     ContainerX.fromJson(json.decode(str));
@@ -43,6 +44,13 @@ class ContainerX {
     );
   }
 
+  Marker toMarker() => Marker(
+      markerId: MarkerId(this.id),
+      infoWindow: InfoWindow(title: this.id),
+      icon: BitmapDescriptor.defaultMarker,
+      position: LatLng(this.lat, this.long));
+
+  ///TODO duzenlenecek
   Map<String, dynamic> toJson() => {
         "id": id,
         "lat": lat,

@@ -9,6 +9,7 @@ class DatabaseService {
 
     Stream<QuerySnapshot<Object?>> collectionStream =
         containersReference.snapshots();
+    //collectionStream.first.then((value) => print(value.docs.first['id']));
     return collectionStream;
   }
 }

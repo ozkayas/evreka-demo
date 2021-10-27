@@ -31,30 +31,40 @@ class _OperationScreenState extends State<OperationScreen> {
     return Scaffold(
       body: Column(
         children: [
-          StreamBuilder<List<ContainerX>>(
-              stream: _viewModel.containers(),
-              builder: (context, asyncSnapshot) {
-                var data = asyncSnapshot.data;
-                print(data);
-                return Container(height: 200, color: Colors.yellowAccent);
-              }),
           Expanded(
-            child: GoogleMap(
-              markers: _markers,
-              onLongPress: _addMarker,
-              initialCameraPosition: _initialCameraPosition,
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              onMapCreated: (controller) => _googleMapController = controller,
-            ),
+            child: StreamBuilder<List<Marker>>(
+                stream: _viewModel.streamOfMarkers(),
+                builder: (context, asyncSnapshot) {
+                  var data = asyncSnapshot.data;
+                  _markers = data!.toSet();
+                  return GoogleMap(
+                    markers: _markers,
+                    //onLongPress: _addMarker,
+                    initialCameraPosition: _initialCameraPosition,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    onMapCreated: (controller) =>
+                        _googleMapController = controller,
+                  );
+                }),
           ),
+          // Expanded(
+          //   child: GoogleMap(
+          //     markers: _markers,
+          //     onLongPress: _addMarker,
+          //     initialCameraPosition: _initialCameraPosition,
+          //     myLocationButtonEnabled: false,
+          //     zoomControlsEnabled: false,
+          //     onMapCreated: (controller) => _googleMapController = controller,
+          //   ),
+          // ),
         ],
       ),
-      floatingActionButton: getContainerData(),
+      //floatingActionButton: getContainerData(),
     );
   }
 
-  FloatingActionButton getContainerData() {
+/*   FloatingActionButton getContainerData() {
     return FloatingActionButton(
         foregroundColor: Colors.green,
         child: Icon(Icons.center_focus_strong),
@@ -65,15 +75,11 @@ class _OperationScreenState extends State<OperationScreen> {
           var response = await containerDocRef.get();
           Map<String, dynamic> data = response.data() as Map<String, dynamic>;
           GeoPoint position = data['position'];
-          Timestamp timeStamp = data['lastDataDate'];
-          print(data['id']);
-          print(position.latitude);
-          print(timeStamp.toDate().toIso8601String());
-          //var containerMap = containerDocRef
+          Timestamp timeStamp = data['lastDataDate']
         });
-  }
+  } */
 
-  FloatingActionButton animateCamera() {
+/*   FloatingActionButton animateCamera() {
     return FloatingActionButton(
       foregroundColor: Colors.black,
       child: Icon(Icons.center_focus_strong),
@@ -82,9 +88,9 @@ class _OperationScreenState extends State<OperationScreen> {
             CameraUpdate.newCameraPosition(_initialCameraPosition));
       },
     );
-  }
+  } */
 
-  void _addMarker(LatLng argument) {
+/*   void _addMarker(LatLng argument) {
     _markers.add(
       Marker(
           markerId: MarkerId(DateTime.now().toIso8601String()),
@@ -93,5 +99,5 @@ class _OperationScreenState extends State<OperationScreen> {
           position: argument),
     );
     setState(() {});
-  }
+  } */
 }
