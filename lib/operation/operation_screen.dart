@@ -19,11 +19,38 @@ class _OperationScreenState extends State<OperationScreen> {
 
   late GoogleMapController _googleMapController;
   Set<Marker> _markers = {};
+  Map<String, Marker> markers = <String, Marker>{};
+  bool markedSelectionMode = false;
 
   @override
   void dispose() {
     _googleMapController.dispose();
     super.dispose();
+  }
+
+  Marker yellowMarker = Marker(
+    markerId: MarkerId('yellow Marker'),
+    position: LatLng(38.480, 27.08),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+    infoWindow: InfoWindow(title: 'selected'),
+  );
+
+  void fillMarkers(List<ContainerX> list) {
+    _markers =
+        list.map((container) => container.toMarker(handleMarkerClick)).toSet();
+  }
+
+  void handleMarkerClick(String id) {
+    markedSelectionMode = true;
+
+    var updatedMarkers = _markers
+        .map((marker) => marker.mapsId.value == id ? yellowMarker : marker)
+        .toSet();
+    setState(() {
+      _markers = updatedMarkers;
+    });
+
+    //markedSelectionMode = false;
   }
 
   @override
@@ -32,20 +59,27 @@ class _OperationScreenState extends State<OperationScreen> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<List<Marker>>(
-                stream: _viewModel.streamOfMarkers(),
+            child: StreamBuilder<List<ContainerX>>(
+                stream: _viewModel.streamOfContainers(),
                 builder: (context, asyncSnapshot) {
-                  var data = asyncSnapshot.data;
-                  _markers = data!.toSet();
-                  return GoogleMap(
-                    markers: _markers,
-                    //onLongPress: _addMarker,
-                    initialCameraPosition: _initialCameraPosition,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    onMapCreated: (controller) =>
-                        _googleMapController = controller,
-                  );
+                  if (!asyncSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    List<ContainerX> data = asyncSnapshot.data!;
+                    if (!markedSelectionMode) {
+                      fillMarkers(data);
+                    }
+                    return GoogleMap(
+                      markers: _markers,
+                      initialCameraPosition: _initialCameraPosition,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      onMapCreated: (controller) =>
+                          _googleMapController = controller,
+                    );
+                  }
                 }),
           ),
           // Expanded(
