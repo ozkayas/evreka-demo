@@ -6,7 +6,7 @@ import 'package:google_map_i/operation/database_service.dart';
 class OperationScreenViewModel extends GetxController {
   final _db = DatabaseService();
 
-  List<ContainerX> containers() {
+/*   List<ContainerX> containers() {
     var containers = _db.fetchContainers();
     Stream<List<DocumentSnapshot>> containersStreamList =  containers.map((querySnapshot) => querySnapshot.docs);
   
@@ -14,5 +14,5 @@ class OperationScreenViewModel extends GetxController {
     // document snapshottan ContainerX sinifina cevirim yapacak metot lazim
     Stream<List<ContainerX>> stream containersStreamList.map((list) => null)
   
-  }
+  } */
 }

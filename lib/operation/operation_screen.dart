@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -32,14 +33,37 @@ class _OperationScreenState extends State<OperationScreen> {
         zoomControlsEnabled: false,
         onMapCreated: (controller) => _googleMapController = controller,
       ),
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.black,
+      floatingActionButton: getContainerData(),
+    );
+  }
+
+  FloatingActionButton getContainerData() {
+    return FloatingActionButton(
+        foregroundColor: Colors.green,
         child: Icon(Icons.center_focus_strong),
-        onPressed: () {
-          _googleMapController.animateCamera(
-              CameraUpdate.newCameraPosition(_initialCameraPosition));
-        },
-      ),
+        onPressed: () async {
+          var containerDocRef = FirebaseFirestore.instance
+              .collection('containers')
+              .doc('container001');
+          var response = await containerDocRef.get();
+          Map<String, dynamic> data = response.data() as Map<String, dynamic>;
+          GeoPoint position = data['position'];
+          Timestamp timeStamp = data['lastDataDate'];
+          print(data['id']);
+          print(position.latitude);
+          print(timeStamp.toDate().toIso8601String());
+          //var containerMap = containerDocRef
+        });
+  }
+
+  FloatingActionButton animateCamera() {
+    return FloatingActionButton(
+      foregroundColor: Colors.black,
+      child: Icon(Icons.center_focus_strong),
+      onPressed: () {
+        _googleMapController.animateCamera(
+            CameraUpdate.newCameraPosition(_initialCameraPosition));
+      },
     );
   }
 
