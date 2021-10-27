@@ -46,10 +46,10 @@ class ContainerX {
     );
   }
 
-  Marker toMarker(Function onTap) => Marker(
+  Marker toMarker(Function onTap, BitmapDescriptor? icon) => Marker(
       markerId: MarkerId(this.id),
       infoWindow: InfoWindow(title: this.id),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
+      icon: icon ?? BitmapDescriptor.defaultMarker,
       position: LatLng(this.lat, this.long),
       onTap: () {
         onTap(this.id);

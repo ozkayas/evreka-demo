@@ -23,28 +23,41 @@ class _OperationScreenState extends State<OperationScreen> {
   bool markedSelectionMode = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _viewModel.initMarketIcons();
+  }
+
+  @override
   void dispose() {
     _googleMapController.dispose();
     super.dispose();
   }
 
-  Marker yellowMarker = Marker(
+/*   Marker yellowMarker = Marker(
     markerId: MarkerId('yellow Marker'),
     position: LatLng(38.480, 27.08),
     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
     infoWindow: InfoWindow(title: 'selected'),
-  );
+  ); */
 
   void fillMarkers(List<ContainerX> list) {
-    _markers =
-        list.map((container) => container.toMarker(handleMarkerClick)).toSet();
+    _markers = list
+        .map((container) =>
+            container.toMarker(handleMarkerClick, _viewModel.defaultMarkerIcon))
+        .toSet();
   }
 
   void handleMarkerClick(String id) {
     markedSelectionMode = true;
 
     var updatedMarkers = _markers
-        .map((marker) => marker.mapsId.value == id ? yellowMarker : marker)
+        .map(
+          (marker) => marker.mapsId.value == id
+              ? marker.copyWith(iconParam: _viewModel.selectedMarkerIcon)
+              : marker.copyWith(iconParam: _viewModel.defaultMarkerIcon),
+        )
         .toSet();
     setState(() {
       _markers = updatedMarkers;
@@ -72,6 +85,11 @@ class _OperationScreenState extends State<OperationScreen> {
                       fillMarkers(data);
                     }
                     return GoogleMap(
+                      onTap: (_) {
+                        setState(() {
+                          markedSelectionMode = false;
+                        });
+                      },
                       markers: _markers,
                       initialCameraPosition: _initialCameraPosition,
                       myLocationButtonEnabled: false,

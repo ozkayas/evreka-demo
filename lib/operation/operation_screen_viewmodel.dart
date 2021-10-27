@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get.dart';
 import 'package:google_map_i/models/container.dart';
@@ -8,6 +12,28 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class OperationScreenViewModel extends GetxController {
   final _db = DatabaseService();
   final markers = <Marker>[].obs;
+
+  BitmapDescriptor? defaultMarkerIcon;
+  BitmapDescriptor? selectedMarkerIcon;
+
+  initMarketIcons() async {
+    var markerIcon = await getBytesFromAsset('assets/household_bin.png', 100);
+    defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
+    markerIcon = await getBytesFromAsset('assets/battery_bin.png', 100);
+    selectedMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
+    // await BitmapDescriptor.fromAssetImage(
+    //     ImageConfiguration(size: Size(30, 30)), 'assets/household_bin.png');
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
 
   Stream<List<ContainerX>> streamOfContainers() {
     var containers = _db.fetchContainers();
@@ -32,7 +58,7 @@ class OperationScreenViewModel extends GetxController {
     return streamListContainer;
   }
 
-  Stream<List<Marker>> streamOfMarkers() {
+/*   Stream<List<Marker>> streamOfMarkers() {
     var containers = _db.fetchContainers();
 
     ///Stream<QuerySnapshot> ==> Stream<List<DocumentSnaphot>>
@@ -44,9 +70,9 @@ class OperationScreenViewModel extends GetxController {
         (listDocumentSnapshot) => listDocumentSnapshot
             .map((documentSnapshot) => ContainerX.fromJson(
                     documentSnapshot.data() as Map<String, dynamic>)
-                .toMarker(() {}))
+                .toMarker(() {},defaultMarkerIcon))
             .toList());
 
     return streamListMarker;
-  }
+  } */
 }
