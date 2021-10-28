@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             title: 'ContainerTracker',
             theme: ThemeData(
-              primarySwatch: Colors.purple,
+              primarySwatch: Colors.green,
             ),
             home: OperationScreen(),
           );

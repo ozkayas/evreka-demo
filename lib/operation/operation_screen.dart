@@ -48,13 +48,25 @@ class _OperationScreenState extends State<OperationScreen> {
               color: Colors.transparent,
             ),
           ),
-          insetPadding: EdgeInsets.only(top: 350),
+          insetPadding: EdgeInsets.only(top: 400),
           titlePadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.zero,
           children: [
             Container(
               width: 336,
-              height: 300,
+              height: 200,
+              child: Column(
+                children: [
+                  Text('Text'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(onPressed: () {}, child: Text('NAVIGATE')),
+                      ElevatedButton(onPressed: () {}, child: Text('RELOCATE')),
+                    ],
+                  )
+                ],
+              ),
             ),
           ],
         );
