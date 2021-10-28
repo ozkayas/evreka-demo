@@ -1,12 +1,13 @@
 import 'package:url_launcher/url_launcher.dart';
 
 class NavigationService {
-  Future<void> navigateTo(double lat, double long) async {
-    var uri = Uri.parse("google.navigation:q=$lat,$long&mode=d");
-    if (await canLaunch(uri.toString())) {
-      await launch(uri.toString());
+  static void navigateTo(double lat, double long) async {
+    String googleUrl = "google.navigation:q=$lat,$long&mode=d";
+
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
     } else {
-      throw 'Could not launch ${uri.toString()}';
+      throw 'Could not launch ${googleUrl}';
     }
   }
 }

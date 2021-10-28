@@ -17,9 +17,8 @@ class OperationScreenViewModel extends GetxController {
   BitmapDescriptor? defaultMarkerIcon;
   BitmapDescriptor? selectedMarkerIcon;
 
-  Future<void> navigateTo(Marker marker) async {
-    final _navigator = NavigationService();
-    await _navigator.navigateTo(
+  void navigateTo(Marker marker) async {
+    NavigationService.navigateTo(
         marker.position.latitude, marker.position.longitude);
   }
 
