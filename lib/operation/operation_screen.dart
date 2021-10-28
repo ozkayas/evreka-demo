@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:get/get.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
@@ -35,6 +36,32 @@ class _OperationScreenState extends State<OperationScreen> {
     super.dispose();
   }
 
+  void openDialog() {
+    showDialog(
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            side: BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+          insetPadding: EdgeInsets.only(top: 350),
+          titlePadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.zero,
+          children: [
+            Container(
+              width: 336,
+              height: 300,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void fillMarkers(List<ContainerX> list) {
     _markers = list
         .map((container) =>
@@ -55,6 +82,7 @@ class _OperationScreenState extends State<OperationScreen> {
     setState(() {
       _markers = updatedMarkers;
     });
+    openDialog();
   }
 
   @override
