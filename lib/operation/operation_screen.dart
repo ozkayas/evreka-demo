@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OperationScreen extends StatefulWidget {
   const OperationScreen({Key? key}) : super(key: key);
@@ -112,8 +113,18 @@ class _OperationScreenState extends State<OperationScreen> {
           // ),
         ],
       ),
-      //floatingActionButton: getContainerData(),
+      floatingActionButton: openMap(),
     );
+  }
+
+  FloatingActionButton openMap() {
+    return FloatingActionButton(onPressed: () async {
+      var lat = 38.5;
+      var lng = 27.09;
+      var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
+
+      await launch(uri.toString());
+    });
   }
 
 /*   FloatingActionButton getContainerData() {

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get.dart';
 import 'package:google_map_i/models/container.dart';
+import 'package:google_map_i/navigation/navigator.dart';
 import 'package:google_map_i/operation/database_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -15,6 +16,12 @@ class OperationScreenViewModel extends GetxController {
 
   BitmapDescriptor? defaultMarkerIcon;
   BitmapDescriptor? selectedMarkerIcon;
+
+  Future<void> navigateTo(Marker marker) async {
+    final _navigator = NavigationService();
+    await _navigator.navigateTo(
+        marker.position.latitude, marker.position.longitude);
+  }
 
   initMarketIcons() async {
     var markerIcon = await getBytesFromAsset('assets/household_bin.png', 100);
