@@ -1,7 +1,7 @@
 import 'package:url_launcher/url_launcher.dart';
 
 class NavigationService {
-  static void navigateTo(double lat, double long) async {
+  static void navigateToMarker(double lat, double long) async {
     String googleUrl = "google.navigation:q=$lat,$long&mode=d";
 
     if (await canLaunch(googleUrl)) {

@@ -22,9 +22,10 @@ class _OperationScreenState extends State<OperationScreen> {
 
   late GoogleMapController _googleMapController;
   Set<Marker> _markers = {};
+  late List<ContainerX> _containers;
   Map<String, Marker> markers = <String, Marker>{};
   bool markerSelectionMode = false;
-  Marker? _selectedMarker;
+  ContainerX? _selectedContainer;
 
   @override
   void initState() {
@@ -39,16 +40,16 @@ class _OperationScreenState extends State<OperationScreen> {
   }
 
   ///Fills markers at first build & when no marker is selected build
-  void fillMarkers(List<ContainerX> list) {
-    _markers = list
+  void fillMarkers() {
+    _markers = _containers
         .map((container) =>
             container.toMarker(handleMarkerClick, _viewModel.defaultMarkerIcon))
         .toSet();
   }
 
-  void setSelectedMarker(String id) {
-    _selectedMarker =
-        _markers.firstWhere((marker) => marker.mapsId.value == id);
+  void setSelectedContainer(String id) {
+    _selectedContainer =
+        _containers.firstWhere((container) => container.id == id);
   }
 
   void changeColorOfSelectedMarker(String id) {
@@ -69,7 +70,7 @@ class _OperationScreenState extends State<OperationScreen> {
     markerSelectionMode = true;
 
     changeColorOfSelectedMarker(id);
-    setSelectedMarker(id);
+    setSelectedContainer(id);
   }
 
   @override
@@ -86,9 +87,10 @@ class _OperationScreenState extends State<OperationScreen> {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    List<ContainerX> data = asyncSnapshot.data!;
+                    //List<ContainerX> data = asyncSnapshot.data!;
+                    _containers = asyncSnapshot.data!;
                     if (!markerSelectionMode) {
-                      fillMarkers(data);
+                      fillMarkers();
                     }
                     return Stack(children: [
                       GoogleMap(
@@ -106,7 +108,7 @@ class _OperationScreenState extends State<OperationScreen> {
                       ),
                       if (markerSelectionMode)
                         ContainerInfoCard(
-                          marker: _selectedMarker,
+                          container: _selectedContainer!,
                           viewModel: _viewModel,
                         )
                     ]);
@@ -119,7 +121,7 @@ class _OperationScreenState extends State<OperationScreen> {
     );
   }
 
-  FloatingActionButton openMap() {
+/*   FloatingActionButton openMap() {
     return FloatingActionButton(onPressed: () async {
       var lat = 38.5;
       var lng = 27.09;
@@ -127,7 +129,7 @@ class _OperationScreenState extends State<OperationScreen> {
 
       await launch(uri.toString());
     });
-  }
+  } */
 
 /*   FloatingActionButton getContainerData() {
     return FloatingActionButton(
@@ -169,48 +171,98 @@ class _OperationScreenState extends State<OperationScreen> {
 
 class ContainerInfoCard extends StatelessWidget {
   final OperationScreenViewModel viewModel;
-  final Marker? marker;
+  final ContainerX container;
   const ContainerInfoCard(
-      {Key? key, required this.marker, required this.viewModel})
+      {Key? key, required this.container, required this.viewModel})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
+      BoxShadow(
+        color: Color(0xFFBBBBBB),
+        spreadRadius: 0,
+        blurRadius: 10,
+        offset: Offset(2, 2), // changes position of shadow
+      ),
+      BoxShadow(
+        color: Color(0xFFBBBBBB),
+        spreadRadius: 0,
+        blurRadius: 10,
+        offset: Offset(-2, -2), // changes position of shadow
+      )
+    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           margin: EdgeInsets.only(bottom: 30),
-          padding: EdgeInsets.fromLTRB(16, 25, 24, 25),
-          decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFFBBBBBB),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: Offset(2, 2), // changes position of shadow
-                ),
-                BoxShadow(
-                  color: Color(0xFFBBBBBB),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: Offset(-2, -2), // changes position of shadow
-                )
-              ],
-              color: Color(0xFFFBFCFF),
-              borderRadius: BorderRadius.circular(8.0)),
-          width: MediaQuery.of(context).size.width * 0.94,
-          height: 200,
+          padding: EdgeInsets.fromLTRB(16, 25, 16, 19),
+          decoration: boxDecoration,
+          //width: MediaQuery.of(context).size.width * 0.94,
+          width: 336,
+          //height: 200,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(marker!.mapsId.value),
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      container.id,
+                      style: GoogleFonts.openSans(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      'Next Collection H4',
+                      style: GoogleFonts.openSans(
+                          color: Color(0xFF535A72),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      '12.01.2020(T1)',
+                      style: GoogleFonts.openSans(
+                          color: Color(0xFF535A72),
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      'Fullness Rate',
+                      style: GoogleFonts.openSans(
+                          color: Color(0xFF535A72),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      '%${container.fullnessRate * 100}',
+                      style: GoogleFonts.openSans(
+                          color: Color(0xFF535A72),
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 13.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _cardButton(() {
-                    viewModel.navigateTo(marker!);
+                    viewModel.navigateToMarker(container);
                   }, 'NAVIGATE'),
-                  _cardButton(() {}, 'RELOCATE'),
+                  SizedBox(
+                    width: 22,
+                  ),
+                  _cardButton(() {
+                    viewModel.openRelocateScreen(context, container);
+                  }, 'RELOCATE'),
                 ],
               )
             ],
@@ -220,36 +272,33 @@ class ContainerInfoCard extends StatelessWidget {
 
   Expanded _cardButton(Function onTap, String title) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Color(0xFF72C875),
-              spreadRadius: 0,
-              blurRadius: 15,
-              offset: Offset(0, 5), // changes position of shadow
-            ),
-          ]),
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                primary: Color(0xFF3BA935),
+      child: Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Color(0xFF72C875),
+            spreadRadius: 0,
+            blurRadius: 15,
+            offset: Offset(0, 5), // changes position of shadow
+          ),
+        ]),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
               ),
-              onPressed: () {
-                onTap();
-              },
-              child: Text(
-                title,
-                style: GoogleFonts.openSans(
-                    color: Color(0xFFFBFCFF),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              )),
-        ),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              primary: Color(0xFF3BA935),
+            ),
+            onPressed: () {
+              onTap();
+            },
+            child: Text(
+              title,
+              style: GoogleFonts.openSans(
+                  color: Color(0xFFFBFCFF),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            )),
       ),
     );
   }

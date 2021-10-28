@@ -8,18 +8,27 @@ import 'package:get/get.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/navigation/navigator.dart';
 import 'package:google_map_i/operation/database_service.dart';
+import 'package:google_map_i/operation/relocation_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OperationScreenViewModel extends GetxController {
   final _db = DatabaseService();
   final markers = <Marker>[].obs;
 
+  /// TODO: assetsler icinden ayirilacak
   BitmapDescriptor? defaultMarkerIcon;
   BitmapDescriptor? selectedMarkerIcon;
+  BitmapDescriptor? disabledMarkerIcon;
 
-  void navigateTo(Marker marker) async {
-    NavigationService.navigateTo(
-        marker.position.latitude, marker.position.longitude);
+  void navigateToMarker(ContainerX container) async {
+    NavigationService.navigateToMarker(container.lat, container.long);
+  }
+
+  void openRelocateScreen(BuildContext context, ContainerX container) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => RelocationScreen(container: container)));
   }
 
   void showAlertDialog(BuildContext context) {
@@ -36,6 +45,8 @@ class OperationScreenViewModel extends GetxController {
     defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
     markerIcon = await getBytesFromAsset('assets/battery_bin.png', 100);
     selectedMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
+    disabledMarkerIcon =
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
     // await BitmapDescriptor.fromAssetImage(
     //     ImageConfiguration(size: Size(30, 30)), 'assets/household_bin.png');
   }
