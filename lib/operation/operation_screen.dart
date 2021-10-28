@@ -22,7 +22,7 @@ class _OperationScreenState extends State<OperationScreen> {
   late GoogleMapController _googleMapController;
   Set<Marker> _markers = {};
   Map<String, Marker> markers = <String, Marker>{};
-  bool markedSelectionMode = false;
+  bool markerSelectionMode = false;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _OperationScreenState extends State<OperationScreen> {
     super.dispose();
   }
 
-  void openDialog() {
+  /*  void openDialog() {
     showDialog(
       barrierColor: Colors.transparent,
       context: context,
@@ -73,6 +73,7 @@ class _OperationScreenState extends State<OperationScreen> {
       },
     );
   }
+ */
 
   void fillMarkers(List<ContainerX> list) {
     _markers = list
@@ -82,7 +83,7 @@ class _OperationScreenState extends State<OperationScreen> {
   }
 
   void handleMarkerClick(String id) {
-    markedSelectionMode = true;
+    markerSelectionMode = true;
 
     var updatedMarkers = _markers
         .map(
@@ -94,7 +95,6 @@ class _OperationScreenState extends State<OperationScreen> {
     setState(() {
       _markers = updatedMarkers;
     });
-    openDialog();
   }
 
   @override
@@ -112,22 +112,25 @@ class _OperationScreenState extends State<OperationScreen> {
                     );
                   } else {
                     List<ContainerX> data = asyncSnapshot.data!;
-                    if (!markedSelectionMode) {
+                    if (!markerSelectionMode) {
                       fillMarkers(data);
                     }
-                    return GoogleMap(
-                      onTap: (_) {
-                        setState(() {
-                          markedSelectionMode = false;
-                        });
-                      },
-                      markers: _markers,
-                      initialCameraPosition: _initialCameraPosition,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      onMapCreated: (controller) =>
-                          _googleMapController = controller,
-                    );
+                    return Stack(children: [
+                      GoogleMap(
+                        onTap: (_) {
+                          setState(() {
+                            markerSelectionMode = false;
+                          });
+                        },
+                        markers: _markers,
+                        initialCameraPosition: _initialCameraPosition,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        onMapCreated: (controller) =>
+                            _googleMapController = controller,
+                      ),
+                      if (markerSelectionMode) ContainerInfoCard()
+                    ]);
                   }
                 }),
           ),
@@ -183,4 +186,36 @@ class _OperationScreenState extends State<OperationScreen> {
     );
     setState(() {});
   } */
+}
+
+class ContainerInfoCard extends StatelessWidget {
+  const ContainerInfoCard({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 30),
+          padding: EdgeInsets.fromLTRB(16, 25, 24, 25),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(8.0)),
+          width: 336,
+          height: 200,
+          child: Column(
+            children: [
+              Text('Text'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(onPressed: () {}, child: Text('NAVIGATE')),
+                  ElevatedButton(onPressed: () {}, child: Text('RELOCATE')),
+                ],
+              )
+            ],
+          ),
+        ));
+  }
 }
