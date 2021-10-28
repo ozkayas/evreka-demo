@@ -23,6 +23,15 @@ class OperationScreenViewModel extends GetxController {
         marker.position.latitude, marker.position.longitude);
   }
 
+  void showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Center();
+      },
+    );
+  }
+
   initMarketIcons() async {
     var markerIcon = await getBytesFromAsset('assets/household_bin.png', 100);
     defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);

@@ -25,7 +25,6 @@ class _OperationScreenState extends State<OperationScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _viewModel.initMarketIcons();
   }
@@ -35,13 +34,6 @@ class _OperationScreenState extends State<OperationScreen> {
     _googleMapController.dispose();
     super.dispose();
   }
-
-/*   Marker yellowMarker = Marker(
-    markerId: MarkerId('yellow Marker'),
-    position: LatLng(38.480, 27.08),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
-    infoWindow: InfoWindow(title: 'selected'),
-  ); */
 
   void fillMarkers(List<ContainerX> list) {
     _markers = list
@@ -63,8 +55,6 @@ class _OperationScreenState extends State<OperationScreen> {
     setState(() {
       _markers = updatedMarkers;
     });
-
-    //markedSelectionMode = false;
   }
 
   @override
@@ -101,16 +91,6 @@ class _OperationScreenState extends State<OperationScreen> {
                   }
                 }),
           ),
-          // Expanded(
-          //   child: GoogleMap(
-          //     markers: _markers,
-          //     onLongPress: _addMarker,
-          //     initialCameraPosition: _initialCameraPosition,
-          //     myLocationButtonEnabled: false,
-          //     zoomControlsEnabled: false,
-          //     onMapCreated: (controller) => _googleMapController = controller,
-          //   ),
-          // ),
         ],
       ),
       floatingActionButton: openMap(),
