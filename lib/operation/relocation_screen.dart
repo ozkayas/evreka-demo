@@ -16,13 +16,17 @@ class RelocationScreen extends StatefulWidget {
 class _RelocationScreenState extends State<RelocationScreen> {
   OperationScreenViewModel _viewModel = Get.find();
   late final ContainerX container;
-  Set<Marker> _markers = {};
+  List<Marker> _markers =
+      List.filled(2, Marker(markerId: MarkerId('dummyMarker')));
+  //Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
     container = widget.container;
-    _markers.add(container.toMarker(() {}, _viewModel.selectedMarkerIcon));
+    //Set marker lists first element
+
+    _markers[0] = (container.toMarker(() {}, _viewModel.selectedMarkerIcon));
   }
 
   @override
@@ -33,11 +37,28 @@ class _RelocationScreenState extends State<RelocationScreen> {
       body: Stack(children: [
         GoogleMap(
           initialCameraPosition: _initialCameraPosition,
-          markers: _markers,
+          markers: Set.from(_markers),
+          onTap: _handleOnTap,
         ),
         RelocationInfoCard(container: container, viewModel: _viewModel)
       ]),
     );
+  }
+
+  void _handleOnTap(LatLng position) {
+    // tiklanan yerde sari renkli marker olustur.
+    var newMarker = Marker(
+        markerId: MarkerId('newMarker'),
+        position: position,
+        icon: _viewModel.selectedMarkerIcon!);
+
+    // 0.indeksteki markerin rengini degistir
+    _markers[0] = _markers.first.copyWith(alphaParam: 0.4);
+
+    // Yeni marker listesi ile sayfayi yenile
+    setState(() {
+      _markers[1] = (newMarker);
+    });
   }
 }
 
@@ -89,6 +110,13 @@ class RelocationInfoCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  ///TODO: Save butonu ile yapilacaklar
+                  ///Container pozisyon bilgisi update edilecek
+                  ///vıewmodeldaki await updateContainerPosition(container)
+                  /// -- true dönmesi beklenecek
+                  /// -- true dönerse sayfa pop edilecek
+                  /// ana sayfada kart gösterilecek.
+
                   _cardButton(() {}, 'SAVE'),
                 ],
               )

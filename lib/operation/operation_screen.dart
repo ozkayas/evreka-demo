@@ -20,26 +20,26 @@ class _OperationScreenState extends State<OperationScreen> {
   static const _initialCameraPosition =
       CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 14);
 
-  late GoogleMapController _googleMapController;
+  //late GoogleMapController _googleMapController;
   Set<Marker> _markers = {};
   late List<ContainerX> _containers;
-  Map<String, Marker> markers = <String, Marker>{};
   bool markerSelectionMode = false;
   ContainerX? _selectedContainer;
 
   @override
   void initState() {
     super.initState();
-    _viewModel.initMarketIcons();
+    _viewModel.initMarkerIcons();
+    _viewModel.setUserPosition();
   }
 
   @override
   void dispose() {
-    _googleMapController.dispose();
+    // _googleMapController.dispose();
     super.dispose();
   }
 
-  ///Fills markers at first build & when no marker is selected build
+  ///Fill markers with default color, at first build & no marker selected build
   void fillMarkers() {
     _markers = _containers
         .map((container) =>
@@ -103,8 +103,8 @@ class _OperationScreenState extends State<OperationScreen> {
                         initialCameraPosition: _initialCameraPosition,
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
-                        onMapCreated: (controller) =>
-                            _googleMapController = controller,
+                        // onMapCreated: (controller) =>
+                        //     _googleMapController = controller,
                       ),
                       if (markerSelectionMode)
                         ContainerInfoCard(
