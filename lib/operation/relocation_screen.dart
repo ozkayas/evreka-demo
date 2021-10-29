@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
@@ -36,25 +37,27 @@ class _RelocationScreenState extends State<RelocationScreen> {
   Widget build(BuildContext context) {
     var _initialCameraPosition =
         CameraPosition(target: LatLng(container.lat, container.long), zoom: 19);
-    return Scaffold(
-      body: Stack(children: [
-        GoogleMap(
-          initialCameraPosition: _initialCameraPosition,
-          markers: Set.from(_markers),
-          onTap: _handleOnTap,
-        ),
-        RelocationInfoCard(
-          handleSave: _handleSave,
-        )
-      ]),
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   final CollectionReference containersReference =
-      //       FirebaseFirestore.instance.collection('containers');
+    return NetworkSensitive(
+      child: Scaffold(
+        body: Stack(children: [
+          GoogleMap(
+            initialCameraPosition: _initialCameraPosition,
+            markers: Set.from(_markers),
+            onTap: _handleOnTap,
+          ),
+          RelocationInfoCard(
+            handleSave: _handleSave,
+          )
+        ]),
+        // floatingActionButton: FloatingActionButton(onPressed: () {
+        //   final CollectionReference containersReference =
+        //       FirebaseFirestore.instance.collection('containers');
 
-      //   containersReference
-      //       .doc('container001')
-      //       .update({"position": GeoPoint(38.8, 27.01)});
-      // }),
+        //   containersReference
+        //       .doc('container001')
+        //       .update({"position": GeoPoint(38.8, 27.01)});
+        // }),
+      ),
     );
   }
 

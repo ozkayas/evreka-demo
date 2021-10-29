@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_map_i/connectivity/connectivity_service.dart';
+import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
@@ -76,52 +78,54 @@ class _OperationScreenState extends State<OperationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<ContainerX>>(
-                stream: _viewModel.streamOfContainers(),
-                builder: (context, asyncSnapshot) {
-                  if (!asyncSnapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    //List<ContainerX> data = asyncSnapshot.data!;
-                    _containers = asyncSnapshot.data!;
-                    if (!markerSelectionMode) {
-                      fillMarkers();
+    return NetworkSensitive(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<List<ContainerX>>(
+                  stream: _viewModel.streamOfContainers(),
+                  builder: (context, asyncSnapshot) {
+                    if (!asyncSnapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      //List<ContainerX> data = asyncSnapshot.data!;
+                      _containers = asyncSnapshot.data!;
+                      if (!markerSelectionMode) {
+                        fillMarkers();
+                      }
+                      return Stack(children: [
+                        GoogleMap(
+                          onTap: (_) {
+                            setState(() {
+                              markerSelectionMode = false;
+                            });
+                          },
+                          markers: _markers,
+                          initialCameraPosition: _initialCameraPosition,
+                          // initialCameraPosition: CameraPosition(
+                          //     target: _viewModel.userPosition, zoom: 19),
+                          myLocationButtonEnabled: false,
+                          zoomControlsEnabled: false,
+                          // onMapCreated: (controller) =>
+                          //     _googleMapController = controller,
+                        ),
+                        if (markerSelectionMode) buildContainerInfoCard(),
+                        if (showRelocateDialog) buildRelocatiInfoCard()
+                        // ContainerInfoCard(
+                        //   container: _selectedContainer!,
+                        //   viewModel: _viewModel,
+                        // )
+                      ]);
                     }
-                    return Stack(children: [
-                      GoogleMap(
-                        onTap: (_) {
-                          setState(() {
-                            markerSelectionMode = false;
-                          });
-                        },
-                        markers: _markers,
-                        initialCameraPosition: _initialCameraPosition,
-                        // initialCameraPosition: CameraPosition(
-                        //     target: _viewModel.userPosition, zoom: 19),
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        // onMapCreated: (controller) =>
-                        //     _googleMapController = controller,
-                      ),
-                      if (markerSelectionMode) buildContainerInfoCard(),
-                      if (showRelocateDialog) buildRelocatiInfoCard()
-                      // ContainerInfoCard(
-                      //   container: _selectedContainer!,
-                      //   viewModel: _viewModel,
-                      // )
-                    ]);
-                  }
-                }),
-          ),
-        ],
+                  }),
+            ),
+          ],
+        ),
+        //floatingActionButton: openMap(),
       ),
-      //floatingActionButton: openMap(),
     );
   }
 
