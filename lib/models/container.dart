@@ -28,7 +28,7 @@ class ContainerX {
   int lastDataDate;
 
   factory ContainerX.fromJson(Map<String, dynamic> json) {
-    // json field names should me defined outside
+    // json field names should be defined outside
 
     GeoPoint _position = json['position'];
     Timestamp _timestamp = json['lastDataDate'];

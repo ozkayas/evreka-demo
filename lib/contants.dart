@@ -8,6 +8,7 @@ class AppConstant {
   static String login = 'LOGIN';
   static String username = 'Username';
   static String password = 'Password';
+  static String errorMessage = 'There is no such username!';
   static String relocationInforCardText =
       'Please select a location from the map for your bin to be relocated. You can select a location by tapping on the map.';
   static String loginScreenMessage =
