@@ -74,24 +74,14 @@ class _RelocationScreenState extends State<RelocationScreen> {
   }
 
   void _handleSave() {
-    ///TODO: Save butonu ile yapilacaklar
-    ///Container pozisyon bilgisi update edilecek
     container.lat = _markers[1].position.latitude;
     container.long = _markers[1].position.longitude;
     _relocationViewModel.relocateContainer(container);
-    Navigator.pop(context);
-    //container
-    ///vıewmodeldaki await updateContainerPosition(container)
-    /// -- true dönmesi beklenecek
-    /// -- true dönerse sayfa pop edilecek
-    /// ana sayfada kart gösterilecek.
+    Navigator.pop(context, true);
   }
 }
 
 class RelocationInfoCard extends StatelessWidget {
-  //final OperationScreenViewModel viewModel;
-  //final RelocationViewModel viewModel;
-  //final List<ContainerX> markers;
   final Function handleSave;
   const RelocationInfoCard({Key? key, required this.handleSave})
       : super(key: key);
@@ -121,7 +111,6 @@ class RelocationInfoCard extends StatelessWidget {
           decoration: boxDecoration,
           //width: MediaQuery.of(context).size.width * 0.94,
           width: 336,
-          //height: 200,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

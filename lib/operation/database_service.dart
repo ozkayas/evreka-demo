@@ -10,7 +10,7 @@ class DatabaseService {
     Stream<QuerySnapshot<Object?>> collectionStream =
         containersReference.snapshots();
     //Donen veriyi gormek icin print
-    collectionStream.first.then((value) => print(value.docs.first.data()));
+    //collectionStream.first.then((value) => print(value.docs.first.data()));
     return collectionStream;
   }
 

@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class OperationScreen extends StatefulWidget {
   const OperationScreen({Key? key}) : super(key: key);
@@ -24,6 +21,7 @@ class _OperationScreenState extends State<OperationScreen> {
   Set<Marker> _markers = {};
   late List<ContainerX> _containers;
   bool markerSelectionMode = false;
+  bool showRelocateDialog = false;
   ContainerX? _selectedContainer;
 
   @override
@@ -106,7 +104,8 @@ class _OperationScreenState extends State<OperationScreen> {
                         // onMapCreated: (controller) =>
                         //     _googleMapController = controller,
                       ),
-                      if (markerSelectionMode) buildContainerInfoCard()
+                      if (markerSelectionMode) buildContainerInfoCard(),
+                      if (showRelocateDialog) buildRelocatiInfoCard()
                       // ContainerInfoCard(
                       //   container: _selectedContainer!,
                       //   viewModel: _viewModel,
@@ -119,6 +118,51 @@ class _OperationScreenState extends State<OperationScreen> {
       ),
       //floatingActionButton: openMap(),
     );
+  }
+
+  Widget buildRelocatiInfoCard() {
+    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
+      BoxShadow(
+        color: Color(0xFFBBBBBB),
+        spreadRadius: 0,
+        blurRadius: 10,
+        offset: Offset(2, 2), // changes position of shadow
+      ),
+      BoxShadow(
+        color: Color(0xFFBBBBBB),
+        spreadRadius: 0,
+        blurRadius: 10,
+        offset: Offset(-2, -2), // changes position of shadow
+      )
+    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 30),
+          padding: EdgeInsets.fromLTRB(15, 35, 15, 35),
+          decoration: boxDecoration,
+          //width: MediaQuery.of(context).size.width * 0.94,
+          width: 336,
+          //height: 200,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Your bin has been relocated succesfully!',
+                    style: GoogleFonts.openSans(
+                        fontSize: 16, fontWeight: FontWeight.normal),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 
   Widget buildContainerInfoCard() {
@@ -204,9 +248,18 @@ class _OperationScreenState extends State<OperationScreen> {
                   SizedBox(
                     width: 22,
                   ),
-                  _cardButton(() {
-                    _viewModel.openRelocateScreen(context, _selectedContainer!);
+                  _cardButton(() async {
+                    final result = await _viewModel.openRelocateScreen(
+                        context, _selectedContainer!);
                     markerSelectionMode = false;
+                    if (result) {
+                      showRelocateDialog = true;
+
+                      await Future.delayed(Duration(seconds: 3));
+                      setState(() {
+                        showRelocateDialog = false;
+                      });
+                    }
                   }, 'RELOCATE'),
                 ],
               )

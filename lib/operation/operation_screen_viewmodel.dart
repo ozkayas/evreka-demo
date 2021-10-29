@@ -31,11 +31,13 @@ class OperationScreenViewModel extends GetxController {
     NavigationService.navigateToMarker(container.lat, container.long);
   }
 
-  void openRelocateScreen(BuildContext context, ContainerX container) {
-    Navigator.push(
+  Future<bool> openRelocateScreen(
+      BuildContext context, ContainerX container) async {
+    final bool result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => RelocationScreen(container: container)));
+    return result;
   }
 
   /// TODO: bu metot disari cikabilir, appconfig gibi bi yere
