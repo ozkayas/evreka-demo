@@ -10,6 +10,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameCtr = TextEditingController();
+  final TextEditingController _passwordCtr = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(
                 width: MediaQuery.of(context).size.width * 0.44,
-                child: Image.asset('assets/logo.png')),
+                child: Image.asset(AppConstant.logoPng)),
             Text(
               AppConstant.loginScreenMessage,
               style: TextStyle(fontSize: 20),
@@ -39,9 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
               children: [
                 TextFormField(
+                  controller: _usernameCtr,
                   cursorHeight: 20,
                   cursorColor: Colors.grey,
                   decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(4),
+                      suffix: GestureDetector(
+                          onTap: () {
+                            _usernameCtr.clear();
+                          },
+                          child: Image.asset(AppConstant.clearPng)),
                       // border: UnderlineInputBorder(),
                       focusedBorder: UnderlineInputBorder(
                           borderSide:

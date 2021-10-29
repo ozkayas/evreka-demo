@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get.dart';
+import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/navigation/location_service.dart';
 import 'package:google_map_i/navigation/navigation_service.dart';
@@ -42,9 +43,9 @@ class OperationScreenViewModel extends GetxController {
 
   /// TODO: bu metot disari cikabilir, appconfig gibi bi yere
   initMarkerIcons() async {
-    var markerIcon = await getBytesFromAsset('assets/household_bin.png', 100);
+    var markerIcon = await getBytesFromAsset(AppConstant.householdBinPng, 100);
     defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
-    markerIcon = await getBytesFromAsset('assets/battery_bin.png', 100);
+    markerIcon = await getBytesFromAsset(AppConstant.batteryBinPng, 100);
     selectedMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
 
     // await BitmapDescriptor.fromAssetImage(
