@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login.dart';
 import 'package:google_map_i/operation/operation_screen.dart';
 
@@ -32,8 +33,12 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             title: 'ContainerTracker',
+
+            ///TODO : Text temalandirma
+            ///https://stackoverflow.com/questions/64271337/how-do-i-use-google-fonts-on-defining-a-theme-in-flutter
             theme: ThemeData(
               primarySwatch: Colors.green,
+              fontFamily: GoogleFonts.openSans().fontFamily,
             ),
             //home: OperationScreen(),
             home: LoginScreen(),
