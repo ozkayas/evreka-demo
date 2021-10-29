@@ -8,7 +8,10 @@ import 'package:google_map_i/operation/operation_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent)); // transparent status bar
+    statusBarIconBrightness: Brightness.dark,
+    //statusBarBrightness: Brightness.dark,
+    //statusBarColor: Colors.transparent
+  )); // transparent status bar
   runApp(MyApp());
 }
 
@@ -35,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'ContainerTracker',
 
             ///TODO : Text temalandirma
