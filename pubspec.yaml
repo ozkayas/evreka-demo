@@ -40,6 +40,11 @@ dependencies:
   flutter_custom_dialog: ^1.2.0
   google_fonts: ^2.1.0
   location: ^4.3.0
+  connectivity: ^3.0.6
+  data_connection_checker:
+    git:
+      url: https://github.com/chornthorn/data_connection_checker.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
