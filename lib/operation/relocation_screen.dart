@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
+import 'package:google_map_i/operation/relocation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RelocationScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class RelocationScreen extends StatefulWidget {
 
 class _RelocationScreenState extends State<RelocationScreen> {
   OperationScreenViewModel _viewModel = Get.find();
+  RelocationViewModel _relocationViewModel = Get.put(RelocationViewModel());
   late final ContainerX container;
   List<Marker> _markers =
       List.filled(2, Marker(markerId: MarkerId('dummyMarker')));
@@ -34,15 +37,24 @@ class _RelocationScreenState extends State<RelocationScreen> {
     var _initialCameraPosition =
         CameraPosition(target: LatLng(container.lat, container.long), zoom: 14);
     return Scaffold(
-      body: Stack(children: [
-        GoogleMap(
-          initialCameraPosition: _initialCameraPosition,
-          markers: Set.from(_markers),
-          onTap: _handleOnTap,
-        ),
-        RelocationInfoCard(container: container, viewModel: _viewModel)
-      ]),
-    );
+        body: Stack(children: [
+          GoogleMap(
+            initialCameraPosition: _initialCameraPosition,
+            markers: Set.from(_markers),
+            onTap: _handleOnTap,
+          ),
+          RelocationInfoCard(
+            handleSave: _handleSave,
+          )
+        ]),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          final CollectionReference containersReference =
+              FirebaseFirestore.instance.collection('containers');
+
+          containersReference
+              .doc('container001')
+              .update({"position": GeoPoint(38.8, 27.01)});
+        }));
   }
 
   void _handleOnTap(LatLng position) {
@@ -60,13 +72,27 @@ class _RelocationScreenState extends State<RelocationScreen> {
       _markers[1] = (newMarker);
     });
   }
+
+  void _handleSave() {
+    ///TODO: Save butonu ile yapilacaklar
+    ///Container pozisyon bilgisi update edilecek
+    container.lat = _markers[1].position.latitude;
+    container.long = _markers[1].position.longitude;
+    _relocationViewModel.relocateContainer(container);
+    //container
+    ///vıewmodeldaki await updateContainerPosition(container)
+    /// -- true dönmesi beklenecek
+    /// -- true dönerse sayfa pop edilecek
+    /// ana sayfada kart gösterilecek.
+  }
 }
 
 class RelocationInfoCard extends StatelessWidget {
-  final OperationScreenViewModel viewModel;
-  final ContainerX container;
-  const RelocationInfoCard(
-      {Key? key, required this.container, required this.viewModel})
+  //final OperationScreenViewModel viewModel;
+  //final RelocationViewModel viewModel;
+  //final List<ContainerX> markers;
+  final Function handleSave;
+  const RelocationInfoCard({Key? key, required this.handleSave})
       : super(key: key);
 
   @override
@@ -110,14 +136,9 @@ class RelocationInfoCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ///TODO: Save butonu ile yapilacaklar
-                  ///Container pozisyon bilgisi update edilecek
-                  ///vıewmodeldaki await updateContainerPosition(container)
-                  /// -- true dönmesi beklenecek
-                  /// -- true dönerse sayfa pop edilecek
-                  /// ana sayfada kart gösterilecek.
-
-                  _cardButton(() {}, 'SAVE'),
+                  _cardButton(() {
+                    handleSave();
+                  }, 'SAVE'),
                 ],
               )
             ],
