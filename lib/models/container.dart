@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 ContainerX containerXFromJson(String str) =>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,8 +15,8 @@ class OperationScreen extends StatefulWidget {
 
 class _OperationScreenState extends State<OperationScreen> {
   OperationScreenViewModel _viewModel = Get.put(OperationScreenViewModel());
-  static const _initialCameraPosition =
-      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 14);
+  var _initialCameraPosition =
+      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 19);
 
   //late GoogleMapController _googleMapController;
   Set<Marker> _markers = {};
@@ -29,6 +30,8 @@ class _OperationScreenState extends State<OperationScreen> {
     super.initState();
     _viewModel.initMarkerIcons();
     _viewModel.setUserPosition();
+    // _initialCameraPosition =
+    //     CameraPosition(target: _viewModel.userPosition, zoom: 19);
   }
 
   @override
@@ -99,6 +102,8 @@ class _OperationScreenState extends State<OperationScreen> {
                         },
                         markers: _markers,
                         initialCameraPosition: _initialCameraPosition,
+                        // initialCameraPosition: CameraPosition(
+                        //     target: _viewModel.userPosition, zoom: 19),
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
                         // onMapCreated: (controller) =>
@@ -154,7 +159,8 @@ class _OperationScreenState extends State<OperationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Your bin has been relocated succesfully!',
+                    AppConstant.relocateSuccesfullMessage,
+                    //'Your bin has been relocated succesfully!',
                     style: GoogleFonts.openSans(
                         fontSize: 16, fontWeight: FontWeight.normal),
                   ),
@@ -244,7 +250,7 @@ class _OperationScreenState extends State<OperationScreen> {
                 children: [
                   _cardButton(() {
                     _viewModel.navigateToMarker(_selectedContainer!);
-                  }, 'NAVIGATE'),
+                  }, AppConstant.navigate),
                   SizedBox(
                     width: 22,
                   ),
@@ -252,7 +258,9 @@ class _OperationScreenState extends State<OperationScreen> {
                     final result = await _viewModel.openRelocateScreen(
                         context, _selectedContainer!);
                     markerSelectionMode = false;
-                    if (result) {
+
+                    // If user taps backbutton result returns as null
+                    if (result ?? false) {
                       showRelocateDialog = true;
 
                       await Future.delayed(Duration(seconds: 3));
@@ -260,7 +268,7 @@ class _OperationScreenState extends State<OperationScreen> {
                         showRelocateDialog = false;
                       });
                     }
-                  }, 'RELOCATE'),
+                  }, AppConstant.relocate),
                 ],
               )
             ],
@@ -348,7 +356,7 @@ class _OperationScreenState extends State<OperationScreen> {
     setState(() {});
   } */
 }
-
+/* 
 class ContainerInfoCard extends StatelessWidget {
   final OperationScreenViewModel viewModel;
   final ContainerX container;
@@ -483,3 +491,4 @@ class ContainerInfoCard extends StatelessWidget {
     );
   }
 }
+ */

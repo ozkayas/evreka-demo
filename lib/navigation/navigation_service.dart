@@ -7,7 +7,7 @@ class NavigationService {
     if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
     } else {
-      throw 'Could not launch ${googleUrl}';
+      throw 'Could not launch $googleUrl';
     }
   }
 }

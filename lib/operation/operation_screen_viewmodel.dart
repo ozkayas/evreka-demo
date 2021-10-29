@@ -31,9 +31,9 @@ class OperationScreenViewModel extends GetxController {
     NavigationService.navigateToMarker(container.lat, container.long);
   }
 
-  Future<bool> openRelocateScreen(
+  Future<bool?> openRelocateScreen(
       BuildContext context, ContainerX container) async {
-    final bool result = await Navigator.push(
+    final result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => RelocationScreen(container: container)));
