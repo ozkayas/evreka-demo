@@ -79,6 +79,7 @@ class _RelocationScreenState extends State<RelocationScreen> {
     container.lat = _markers[1].position.latitude;
     container.long = _markers[1].position.longitude;
     _relocationViewModel.relocateContainer(container);
+    Navigator.pop(context);
     //container
     ///vıewmodeldaki await updateContainerPosition(container)
     /// -- true dönmesi beklenecek
