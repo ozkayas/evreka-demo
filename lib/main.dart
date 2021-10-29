@@ -8,10 +8,9 @@ import 'package:google_map_i/operation/operation_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarIconBrightness: Brightness.dark,
-    //statusBarBrightness: Brightness.dark,
-    //statusBarColor: Colors.transparent
-  )); // transparent status bar
+      statusBarIconBrightness: Brightness.dark,
+      //statusBarBrightness: Brightness.dark,
+      statusBarColor: Colors.transparent)); // transparent status bar
   runApp(MyApp());
 }
 
