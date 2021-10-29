@@ -15,12 +15,25 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isObscure = true;
 
   @override
+  void dispose() {
+    _usernameCtr.dispose();
+    _passwordCtr.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    double paddingValue = (MediaQuery.of(context).size.width - 300) / 2;
+    var outerPadding =
+        EdgeInsets.fromLTRB(paddingValue, 0, paddingValue - 9, paddingValue);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: height,
+          width: width,
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: [Color(0xFFECECEC), Color(0xFFFFFFFF)],
@@ -28,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 end: Alignment.bottomCenter),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+            padding: outerPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -77,31 +90,52 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  TextFormField textFormField(
+  Widget textFormField(
       {required TextEditingController controller,
       required String suffixImage,
       required Function suffixFunction,
       required String labelText,
       bool obscureText = false}) {
-    return TextFormField(
-      obscuringCharacter: '*',
-      obscureText: obscureText,
-      controller: controller,
-      cursorHeight: 20,
-      cursorColor: Colors.grey,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(4),
-          suffix: GestureDetector(
+    Color getColor() {
+      if (labelText == AppConstant.password) {
+        if (_isObscure) {
+          return Color(0xFFBBBBBB);
+        } else {
+          return Color(0xFFE9CF30);
+        }
+      } else {
+        return Color(0xFFBBBBBB);
+      }
+    }
+
+    return Container(
+      width: 300,
+      child: TextFormField(
+        obscuringCharacter: '*',
+        obscureText: obscureText,
+        controller: controller,
+        cursorHeight: 20,
+        cursorColor: Colors.grey,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(4),
+            suffix: GestureDetector(
               onTap: () {
                 suffixFunction();
               },
-              child: Image.asset(suffixImage)),
-          // border: UnderlineInputBorder(),
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(width: 2, color: Color(0xFFE9CF30))),
-          //suffixIcon: Icon(Icons.star),
-          labelText: labelText,
-          labelStyle: TextStyle(fontSize: 16, color: Color(0xFFBBBBBB))),
+              //child: Image.asset(suffixImage),
+              child: ImageIcon(
+                AssetImage(suffixImage),
+                //color: _isObscure ? Color(0xFFBBBBBB) : Color(0xFFE9CF30),
+                color: getColor(),
+              ),
+            ),
+            // border: UnderlineInputBorder(),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(width: 2, color: Color(0xFFE9CF30))),
+            //suffixIcon: Icon(Icons.star),
+            labelText: labelText,
+            labelStyle: TextStyle(fontSize: 16, color: Color(0xFFBBBBBB))),
+      ),
     );
   }
 
@@ -110,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
       opacity: enabled ? 1.0 : 0.3,
       child: Container(
         height: 43,
-        width: double.infinity,
+        width: 304,
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
             color: Color(0xFF72C875),
