@@ -6,7 +6,7 @@ class AuthManager {
     bool result = false;
 
     await Future.delayed(Duration(seconds: 2), () {
-      if (user.name == 'evreka') {
+      if (user.name.toLowerCase() == 'evreka') {
         result = true;
       } else {
         result = false;
