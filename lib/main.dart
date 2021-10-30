@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login.dart';
+import 'package:google_map_i/cluster_map.dart';
 import 'package:google_map_i/operation/operation_screen.dart';
 
 import 'evreka_theme.dart';
@@ -54,8 +55,9 @@ class _MyAppState extends State<MyApp> {
 
             theme: theme,
 
-            home: OperationScreen(),
+            //home: OperationScreen(),
             //home: LoginScreen(),
+            home: MapSample(),
           );
         }
 
