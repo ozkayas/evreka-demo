@@ -42,6 +42,7 @@ class _MyAppState extends State<MyApp> {
             title: 'ContainerTracker',
 
             ///TODO : Text temalandirma
+            ///Textler dard gray olacak
             ///https://stackoverflow.com/questions/64271337/how-do-i-use-google-fonts-on-defining-a-theme-in-flutter
             theme: ThemeData(
               primarySwatch: Colors.green,

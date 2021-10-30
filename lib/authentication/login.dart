@@ -15,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginViewModel _viewModel = Get.put(LoginViewModel());
   final TextEditingController _usernameCtr = TextEditingController();
   final TextEditingController _passwordCtr = TextEditingController();
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
   bool _isObscure = true;
   bool _loginError = false;
 
@@ -22,6 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _usernameCtr.dispose();
     _passwordCtr.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
+
     super.dispose();
   }
 
@@ -55,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Spacer(flex: 130),
                     SizedBox(
                         width: MediaQuery.of(context).size.width * 0.44,
-                        child: Image.asset(AppConstant.logoPng)),
+                        child: Image.asset(AppConstant.urlLogoPng)),
                     Spacer(flex: 80),
                     Text(
                       AppConstant.loginScreenMessage,
@@ -68,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         textFormField(
                             controller: _usernameCtr,
                             suffixFunction: _usernameCtr.clear,
-                            suffixImage: AppConstant.clearPng,
+                            focusNode: _usernameFocus,
                             labelText: AppConstant.username),
                         SizedBox(height: 45),
                         textFormField(
@@ -78,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _isObscure = !_isObscure;
                               });
                             },
-                            suffixImage: AppConstant.passwordPng,
+                            focusNode: _passwordFocus,
                             labelText: AppConstant.password,
                             obscureText: _isObscure),
                         SizedBox(height: 220),
@@ -110,38 +115,47 @@ class _LoginScreenState extends State<LoginScreen> {
   void showLoginErrorDialog() async {
     setState(() {
       _loginError = true;
-      print('loginerror true');
     });
     await Future.delayed(
       Duration(seconds: 3),
     );
     setState(() {
       _loginError = false;
-      print('loginerror false');
     });
   }
 
   Widget textFormField(
       {required TextEditingController controller,
-      required String suffixImage,
+      required FocusNode focusNode,
       required Function suffixFunction,
       required String labelText,
       bool obscureText = false}) {
-    ///TODO:Labeltext renkleri
     /// TODO: overlay eklenecek
-    /// TODO: GetIcon eklenecek, cunku alert icon gerekiyor
-    Color getColor() {
+
+    Widget getSuffixIcon() {
       if (labelText == AppConstant.password) {
         if (_isObscure) {
-          return Color(0xFFBBBBBB);
+          return ImageIcon(
+            AssetImage(AppConstant.urlPasswordPng),
+            color: AppColor.ShadowColor.color,
+          );
         } else {
-          return Color(0xFFE9CF30);
+          return ImageIcon(
+            AssetImage(AppConstant.urlPasswordPng),
+            color: AppColor.Yellow.color,
+          );
         }
       } else {
         if (_loginError) {
-          return Color(0xFFFC3131);
+          return ImageIcon(
+            AssetImage(AppConstant.urlErrorPng),
+            color: AppColor.ErrorColor.color,
+          );
         } else {
-          return Color(0xFFBBBBBB);
+          return ImageIcon(
+            AssetImage(AppConstant.urlClearPng),
+            color: AppColor.ShadowColor.color,
+          );
         }
       }
     }
@@ -149,30 +163,39 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       width: 300,
       child: TextFormField(
+        focusNode: focusNode,
+        style: (labelText == AppConstant.username && _loginError)
+            ? TextStyle(color: AppColor.ErrorColor.color)
+            : null,
         obscuringCharacter: '*',
         obscureText: obscureText,
         controller: controller,
         cursorHeight: 20,
         cursorColor: Colors.grey,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(4),
+            contentPadding: EdgeInsets.all(3),
             suffix: GestureDetector(
               onTap: () {
                 suffixFunction();
               },
-              //child: Image.asset(suffixImage),
-              child: ImageIcon(
-                AssetImage(suffixImage),
-                //color: _isObscure ? Color(0xFFBBBBBB) : Color(0xFFE9CF30),
-                color: getColor(),
-              ),
+              child: getSuffixIcon(),
             ),
-            // border: UnderlineInputBorder(),
+            enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                    width: 1,
+                    color: (labelText == AppConstant.username && _loginError)
+                        ? AppColor.ErrorColor.color
+                        : Colors.grey)),
             focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(width: 2, color: Color(0xFFE9CF30))),
-            //suffixIcon: Icon(Icons.star),
+                borderSide: BorderSide(width: 2, color: AppColor.Yellow.color)),
             labelText: labelText,
-            labelStyle: TextStyle(fontSize: 16, color: Color(0xFFBBBBBB))),
+            labelStyle: TextStyle(
+                fontSize: 16,
+                color: (labelText == AppConstant.username && _loginError)
+                    ? AppColor.ErrorColor.color
+                    : focusNode.hasFocus
+                        ? AppColor.DarkGrey.color
+                        : AppColor.ShadowColor.color)),
       ),
     );
   }
@@ -185,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
         width: 304,
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-            color: Color(0xFF72C875),
+            color: AppColor.ShadowColorGreen.color,
             spreadRadius: 0,
             blurRadius: 15,
             offset: Offset(0, 5),
@@ -248,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(AppConstant.errorPng),
+                  Image.asset(AppConstant.urlErrorPng),
                   SizedBox(width: 12),
                   Text(
                     AppConstant.errorMessage,
