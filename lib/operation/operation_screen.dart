@@ -130,20 +130,23 @@ class _OperationScreenState extends State<OperationScreen> {
   }
 
   Widget buildRelocatiInfoCard() {
-    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(2, 2), // changes position of shadow
-      ),
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(-2, -2), // changes position of shadow
-      )
-    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -176,20 +179,23 @@ class _OperationScreenState extends State<OperationScreen> {
   }
 
   Widget buildContainerInfoCard() {
-    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(2, 2), // changes position of shadow
-      ),
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(-2, -2), // changes position of shadow
-      )
-    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -285,7 +291,7 @@ class _OperationScreenState extends State<OperationScreen> {
       child: Container(
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-            color: Color(0xFF72C875),
+            color: AppColor.ShadowColorGreen.color,
             spreadRadius: 0,
             blurRadius: 15,
             offset: Offset(0, 5), // changes position of shadow
@@ -297,7 +303,7 @@ class _OperationScreenState extends State<OperationScreen> {
                 borderRadius: BorderRadius.circular(5.0),
               ),
               padding: EdgeInsets.symmetric(vertical: 8.0),
-              primary: Color(0xFF3BA935),
+              primary: AppColor.Green.color,
             ),
             onPressed: () {
               onTap();
@@ -305,189 +311,7 @@ class _OperationScreenState extends State<OperationScreen> {
             child: Text(
               title,
               style: GoogleFonts.openSans(
-                  color: Color(0xFFFBFCFF),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            )),
-      ),
-    );
-  }
-
-/*   FloatingActionButton openMap() {
-    return FloatingActionButton(onPressed: () async {
-      var lat = 38.5;
-      var lng = 27.09;
-      var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
-
-      await launch(uri.toString());
-    });
-  } */
-
-/*   FloatingActionButton getContainerData() {
-    return FloatingActionButton(
-        foregroundColor: Colors.green,
-        child: Icon(Icons.center_focus_strong),
-        onPressed: () async {
-          var containerDocRef = FirebaseFirestore.instance
-              .collection('containers')
-              .doc('container001');
-          var response = await containerDocRef.get();
-          Map<String, dynamic> data = response.data() as Map<String, dynamic>;
-          GeoPoint position = data['position'];
-          Timestamp timeStamp = data['lastDataDate']
-        });
-  } */
-
-/*   FloatingActionButton animateCamera() {
-    return FloatingActionButton(
-      foregroundColor: Colors.black,
-      child: Icon(Icons.center_focus_strong),
-      onPressed: () {
-        _googleMapController.animateCamera(
-            CameraUpdate.newCameraPosition(_initialCameraPosition));
-      },
-    );
-  } */
-
-/*   void _addMarker(LatLng argument) {
-    _markers.add(
-      Marker(
-          markerId: MarkerId(DateTime.now().toIso8601String()),
-          infoWindow: InfoWindow(title: 'marker'),
-          icon: BitmapDescriptor.defaultMarker,
-          position: argument),
-    );
-    setState(() {});
-  } */
-}
-/* 
-class ContainerInfoCard extends StatelessWidget {
-  final OperationScreenViewModel viewModel;
-  final ContainerX container;
-  const ContainerInfoCard(
-      {Key? key, required this.container, required this.viewModel})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(2, 2), // changes position of shadow
-      ),
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(-2, -2), // changes position of shadow
-      )
-    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
-
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 30),
-          padding: EdgeInsets.fromLTRB(16, 25, 16, 19),
-          decoration: boxDecoration,
-          //width: MediaQuery.of(context).size.width * 0.94,
-          width: 336,
-          //height: 200,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      container.id,
-                      style: GoogleFonts.openSans(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      'Next Collection H4',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      '12.01.2020(T1)',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      'Fullness Rate',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      '%${container.fullnessRate * 100}',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 13.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _cardButton(() {
-                    viewModel.navigateToMarker(container);
-                  }, 'NAVIGATE'),
-                  SizedBox(
-                    width: 22,
-                  ),
-                  _cardButton(() {
-                    viewModel.openRelocateScreen(context, container);
-                  }, 'RELOCATE'),
-                ],
-              )
-            ],
-          ),
-        ));
-  }
-
-  Expanded _cardButton(Function onTap, String title) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: Color(0xFF72C875),
-            spreadRadius: 0,
-            blurRadius: 15,
-            offset: Offset(0, 5), // changes position of shadow
-          ),
-        ]),
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              primary: Color(0xFF3BA935),
-            ),
-            onPressed: () {
-              onTap();
-            },
-            child: Text(
-              title,
-              style: GoogleFonts.openSans(
-                  color: Color(0xFFFBFCFF),
+                  color: AppColor.LightColor.color,
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             )),
@@ -495,4 +319,3 @@ class ContainerInfoCard extends StatelessWidget {
     );
   }
 }
- */

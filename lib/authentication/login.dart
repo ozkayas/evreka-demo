@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                primary: Color(0xFF3BA935),
+                primary: AppColor.Green.color,
               ),
               onPressed: () {
                 onTap();
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text(
                 title,
                 style: GoogleFonts.openSans(
-                    color: Color(0xFFFBFCFF),
+                    color: AppColor.LightColor.color,
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
               )),
@@ -243,20 +243,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildErrorDialog() {
-    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(2, 2), // changes position of shadow
-      ),
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(-2, -2), // changes position of shadow
-      )
-    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
 
     return Align(
         alignment: Alignment.bottomCenter,

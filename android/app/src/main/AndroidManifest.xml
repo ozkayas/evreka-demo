@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.evreka_demo_app">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="google_map_i"
         android:icon="@mipmap/ic_launcher">

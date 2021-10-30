@@ -92,20 +92,23 @@ class RelocationInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration boxDecoration = BoxDecoration(boxShadow: [
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(2, 2), // changes position of shadow
-      ),
-      BoxShadow(
-        color: Color(0xFFBBBBBB),
-        spreadRadius: 0,
-        blurRadius: 10,
-        offset: Offset(-2, -2), // changes position of shadow
-      )
-    ], color: Color(0xFFFBFCFF), borderRadius: BorderRadius.circular(8.0));
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -145,7 +148,7 @@ class RelocationInfoCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-            color: Color(0xFF72C875),
+            color: AppColor.ShadowColorGreen.color,
             spreadRadius: 0,
             blurRadius: 15,
             offset: Offset(0, 5), // changes position of shadow
@@ -157,7 +160,7 @@ class RelocationInfoCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
               ),
               padding: EdgeInsets.symmetric(vertical: 8.0),
-              primary: Color(0xFF3BA935),
+              primary: AppColor.Green.color,
             ),
             onPressed: () {
               onTap();
@@ -165,7 +168,7 @@ class RelocationInfoCard extends StatelessWidget {
             child: Text(
               title,
               style: GoogleFonts.openSans(
-                  color: Color(0xFFFBFCFF),
+                  color: AppColor.LightColor.color,
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             )),
