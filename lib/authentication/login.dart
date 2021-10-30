@@ -206,37 +206,38 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _loginButton(Function onTap, String title, bool enabled) {
     return Opacity(
       opacity: enabled ? 1.0 : 0.3,
-      child: Container(
-        height: 43,
-        width: 304,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: AppColor.ShadowColorGreen.color,
-            spreadRadius: 0,
-            blurRadius: 15,
-            offset: Offset(0, 5),
-          ),
-        ]),
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              primary: Color(0xFF3BA935),
+      child: IgnorePointer(
+        ignoring: !enabled,
+        child: Container(
+          height: 43,
+          width: 304,
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: AppColor.ShadowColorGreen.color,
+              spreadRadius: 0,
+              blurRadius: 15,
+              offset: Offset(0, 5),
             ),
-            onPressed: enabled
-                ? () {
-                    onTap();
-                  }
-                : () {},
-            child: Text(
-              title,
-              style: GoogleFonts.openSans(
-                  color: Color(0xFFFBFCFF),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            )),
+          ]),
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                primary: Color(0xFF3BA935),
+              ),
+              onPressed: () {
+                onTap();
+              },
+              child: Text(
+                title,
+                style: GoogleFonts.openSans(
+                    color: Color(0xFFFBFCFF),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              )),
+        ),
       ),
     );
   }
