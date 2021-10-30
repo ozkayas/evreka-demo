@@ -14,7 +14,7 @@ class AppConstant {
   static String relocationInforCardText =
       'Please select a location from the map for your bin to be relocated. You can select a location by tapping on the map.';
   static String loginScreenMessage =
-      'Please enter your user name and password. (T2)';
+      'Please enter your user name and password.';
 
   /// Asset urls
   static String urlClearPng = 'assets/clear.png';

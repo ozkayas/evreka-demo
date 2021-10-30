@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login.dart';
 import 'package:google_map_i/operation/operation_screen.dart';
 
+import 'evreka_theme.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -28,6 +30,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = EvrekaTheme.light();
+
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -41,15 +45,10 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'ContainerTracker',
+            title: 'Container Tracker',
 
-            ///TODO : Text temalandirma
-            ///Textler dard gray olacak
-            ///https://stackoverflow.com/questions/64271337/how-do-i-use-google-fonts-on-defining-a-theme-in-flutter
-            theme: ThemeData(
-              primarySwatch: Colors.green,
-              fontFamily: GoogleFonts.openSans().fontFamily,
-            ),
+            theme: theme,
+
             //home: OperationScreen(),
             home: LoginScreen(),
           );

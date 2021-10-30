@@ -3,6 +3,7 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login_viewmodel.dart';
+import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -33,76 +34,83 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
     double paddingValue = (MediaQuery.of(context).size.width - 300) / 2;
     var outerPadding =
         EdgeInsets.fromLTRB(paddingValue, 0, paddingValue - 9, paddingValue);
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            Container(
-              height: height,
-              width: width,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Color(0xFFECECEC), Color(0xFFFFFFFF)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter),
-              ),
-              child: Padding(
-                padding: outerPadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Spacer(flex: 130),
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.44,
-                        child: Image.asset(AppConstant.urlLogoPng)),
-                    Spacer(flex: 80),
-                    Text(
-                      AppConstant.loginScreenMessage,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Spacer(flex: 56),
-                    Form(
-                        child: Column(
-                      children: [
-                        textFormField(
+    const boxDecoration = BoxDecoration(
+      gradient: LinearGradient(
+          colors: [Color(0xFFECECEC), Color(0xFFFFFFFF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter),
+    );
+
+    return NetworkSensitive(
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: [
+              Container(
+                height: height,
+                width: width,
+                decoration: boxDecoration,
+                child: Padding(
+                  padding: outerPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Spacer(flex: 130),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.44,
+                          child: Image.asset(AppConstant.urlLogoPng)),
+                      Spacer(flex: 80),
+                      Text(AppConstant.loginScreenMessage,
+                          style: textTheme.bodyText2),
+                      Spacer(flex: 56),
+                      Form(
+                          child: Column(
+                        children: [
+                          textFormField(
                             controller: _usernameCtr,
                             suffixFunction: _usernameCtr.clear,
                             focusNode: _usernameFocus,
-                            labelText: AppConstant.username),
-                        SizedBox(height: 45),
-                        textFormField(
-                            controller: _passwordCtr,
-                            suffixFunction: () {
-                              setState(() {
-                                _isObscure = !_isObscure;
-                              });
-                            },
-                            focusNode: _passwordFocus,
-                            labelText: AppConstant.password,
-                            obscureText: _isObscure),
-                        SizedBox(height: 220),
-                        Center(
+                            labelText: AppConstant.username,
+                            textTheme: textTheme,
+                          ),
+                          SizedBox(height: 45),
+                          textFormField(
+                              controller: _passwordCtr,
+                              suffixFunction: () {
+                                setState(() {
+                                  _isObscure = !_isObscure;
+                                });
+                              },
+                              focusNode: _passwordFocus,
+                              labelText: AppConstant.password,
+                              textTheme: textTheme,
+                              obscureText: _isObscure),
+                          SizedBox(height: 220),
+                          Center(
                             child: _loginButton(
                                 handleLogin,
                                 AppConstant.login,
                                 _usernameCtr.text.isNotEmpty &&
-                                    _passwordCtr.text.isNotEmpty))
-                      ],
-                    ))
-                  ],
+                                    _passwordCtr.text.isNotEmpty,
+                                textTheme),
+                          )
+                        ],
+                      ))
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (_loginError) buildErrorDialog()
-          ],
-        ));
+              if (_loginError) buildErrorDialog(textTheme)
+            ],
+          )),
+    );
   }
 
   handleLogin() async {
@@ -132,9 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
       required FocusNode focusNode,
       required Function suffixFunction,
       required String labelText,
+      required TextTheme textTheme,
       bool obscureText = false}) {
-    /// TODO: overlay eklenecek
-
     Widget getSuffixIcon() {
       if (labelText == AppConstant.password) {
         if (_isObscure) {
@@ -168,8 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextFormField(
         focusNode: focusNode,
         style: (labelText == AppConstant.username && _loginError)
-            ? TextStyle(color: AppColor.ErrorColor.color)
-            : null,
+            ? textTheme.bodyText1!.copyWith(color: AppColor.ErrorColor.color)
+            // ? TextStyle(color: AppColor.ErrorColor.color)
+            // : null,
+            : textTheme.bodyText1,
         obscuringCharacter: '*',
         obscureText: obscureText,
         controller: controller,
@@ -203,7 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _loginButton(Function onTap, String title, bool enabled) {
+  Widget _loginButton(
+      Function onTap, String title, bool enabled, TextTheme textTheme) {
     return Opacity(
       opacity: enabled ? 1.0 : 0.3,
       child: IgnorePointer(
@@ -230,19 +240,13 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 onTap();
               },
-              child: Text(
-                title,
-                style: GoogleFonts.openSans(
-                    color: AppColor.LightColor.color,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              )),
+              child: Text(title, style: textTheme.button)),
         ),
       ),
     );
   }
 
-  Widget buildErrorDialog() {
+  Widget buildErrorDialog(TextTheme textTheme) {
     final BoxDecoration boxDecoration = BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -282,9 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(width: 12),
                   Text(
                     AppConstant.errorMessage,
-                    //'Your bin has been relocated succesfully!',
-                    style: GoogleFonts.openSans(
-                        fontSize: 16, fontWeight: FontWeight.normal),
+                    style: textTheme.bodyText1,
                   ),
                 ],
               ),

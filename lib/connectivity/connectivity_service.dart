@@ -13,8 +13,6 @@ class ConnectivityService {
     Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
-      // Use Connectivity() here to gather more info if you need t
-
       if (result != ConnectivityResult.none) {
         isDeviceConnected = await DataConnectionChecker().hasConnection;
       }

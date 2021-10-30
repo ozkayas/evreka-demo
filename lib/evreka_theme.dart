@@ -37,5 +37,12 @@ class EvrekaTheme {
       fontWeight: FontWeight.w800,
       color: AppColor.DarkGrey.color,
     ),
+
+    //OOpen Sans Bold — 20pt — #FBFCFF -- Button Text
+    button: GoogleFonts.openSans(
+      fontSize: 20.0,
+      fontWeight: FontWeight.bold,
+      color: AppColor.LightColor.color,
+    ),
   );
 }

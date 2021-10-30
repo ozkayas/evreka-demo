@@ -22,42 +22,29 @@ class _RelocationScreenState extends State<RelocationScreen> {
   late final ContainerX container;
   List<Marker> _markers =
       List.filled(2, Marker(markerId: MarkerId('dummyMarker')));
-  //Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
     container = widget.container;
     //Set marker lists first element
-
     _markers[0] = (container.toMarker(() {}, _viewModel.selectedMarkerIcon));
   }
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     var _initialCameraPosition =
         CameraPosition(target: LatLng(container.lat, container.long), zoom: 19);
-    return NetworkSensitive(
-      child: Scaffold(
-        body: Stack(children: [
-          GoogleMap(
-            initialCameraPosition: _initialCameraPosition,
-            markers: Set.from(_markers),
-            onTap: _handleOnTap,
-          ),
-          RelocationInfoCard(
-            handleSave: _handleSave,
-          )
-        ]),
-        // floatingActionButton: FloatingActionButton(onPressed: () {
-        //   final CollectionReference containersReference =
-        //       FirebaseFirestore.instance.collection('containers');
-
-        //   containersReference
-        //       .doc('container001')
-        //       .update({"position": GeoPoint(38.8, 27.01)});
-        // }),
-      ),
+    return Scaffold(
+      body: Stack(children: [
+        GoogleMap(
+          initialCameraPosition: _initialCameraPosition,
+          markers: Set.from(_markers),
+          onTap: _handleOnTap,
+        ),
+        RelocationInfoCard(handleSave: _handleSave, textTheme: textTheme)
+      ]),
     );
   }
 
@@ -87,7 +74,9 @@ class _RelocationScreenState extends State<RelocationScreen> {
 
 class RelocationInfoCard extends StatelessWidget {
   final Function handleSave;
-  const RelocationInfoCard({Key? key, required this.handleSave})
+  final TextTheme textTheme;
+  const RelocationInfoCard(
+      {Key? key, required this.handleSave, required this.textTheme})
       : super(key: key);
 
   @override
@@ -126,8 +115,7 @@ class RelocationInfoCard extends StatelessWidget {
               Text(
                 AppConstant.relocationInforCardText,
                 textAlign: TextAlign.justify,
-                style: GoogleFonts.openSans(
-                    fontSize: 16, fontWeight: FontWeight.normal),
+                style: textTheme.bodyText1,
               ),
               SizedBox(height: 15.0),
               Row(
@@ -135,7 +123,7 @@ class RelocationInfoCard extends StatelessWidget {
                 children: [
                   _cardButton(() {
                     handleSave();
-                  }, AppConstant.save),
+                  }, AppConstant.save, textTheme),
                 ],
               )
             ],
@@ -143,7 +131,7 @@ class RelocationInfoCard extends StatelessWidget {
         ));
   }
 
-  Expanded _cardButton(Function onTap, String title) {
+  Expanded _cardButton(Function onTap, String title, TextTheme textTheme) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(boxShadow: [
@@ -167,10 +155,7 @@ class RelocationInfoCard extends StatelessWidget {
             },
             child: Text(
               title,
-              style: GoogleFonts.openSans(
-                  color: AppColor.LightColor.color,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+              style: textTheme.button,
             )),
       ),
     );

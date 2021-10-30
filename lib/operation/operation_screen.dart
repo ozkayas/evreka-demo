@@ -78,58 +78,57 @@ class _OperationScreenState extends State<OperationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return NetworkSensitive(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder<List<ContainerX>>(
-                  stream: _viewModel.streamOfContainers(),
-                  builder: (context, asyncSnapshot) {
-                    if (!asyncSnapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      //List<ContainerX> data = asyncSnapshot.data!;
-                      _containers = asyncSnapshot.data!;
-                      if (!markerSelectionMode) {
-                        fillMarkers();
-                      }
-                      return Stack(children: [
-                        GoogleMap(
-                          onTap: (_) {
-                            setState(() {
-                              markerSelectionMode = false;
-                            });
-                          },
-                          markers: _markers,
-                          initialCameraPosition: _initialCameraPosition,
-                          // initialCameraPosition: CameraPosition(
-                          //     target: _viewModel.userPosition, zoom: 19),
-                          myLocationButtonEnabled: false,
-                          zoomControlsEnabled: false,
-                          // onMapCreated: (controller) =>
-                          //     _googleMapController = controller,
-                        ),
-                        if (markerSelectionMode) buildContainerInfoCard(),
-                        if (showRelocateDialog) buildRelocatiInfoCard()
-                        // ContainerInfoCard(
-                        //   container: _selectedContainer!,
-                        //   viewModel: _viewModel,
-                        // )
-                      ]);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<List<ContainerX>>(
+                stream: _viewModel.streamOfContainers(),
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    //List<ContainerX> data = asyncSnapshot.data!;
+                    _containers = asyncSnapshot.data!;
+                    if (!markerSelectionMode) {
+                      fillMarkers();
                     }
-                  }),
-            ),
-          ],
-        ),
-        //floatingActionButton: openMap(),
+                    return Stack(children: [
+                      GoogleMap(
+                        onTap: (_) {
+                          setState(() {
+                            markerSelectionMode = false;
+                          });
+                        },
+                        markers: _markers,
+                        initialCameraPosition: _initialCameraPosition,
+                        // initialCameraPosition: CameraPosition(
+                        //     target: _viewModel.userPosition, zoom: 19),
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        // onMapCreated: (controller) =>
+                        //     _googleMapController = controller,
+                      ),
+                      if (markerSelectionMode)
+                        buildContainerInfoCard(textTheme),
+                      if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
+                      // ContainerInfoCard(
+                      //   container: _selectedContainer!,
+                      //   viewModel: _viewModel,
+                      // )
+                    ]);
+                  }
+                }),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildRelocatiInfoCard() {
+  Widget buildRelocatiInfoCard(TextTheme textTheme) {
     final BoxDecoration boxDecoration = BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -167,9 +166,7 @@ class _OperationScreenState extends State<OperationScreen> {
                 children: [
                   Text(
                     AppConstant.relocateSuccesfullMessage,
-                    //'Your bin has been relocated succesfully!',
-                    style: GoogleFonts.openSans(
-                        fontSize: 16, fontWeight: FontWeight.normal),
+                    style: textTheme.bodyText1,
                   ),
                 ],
               ),
@@ -178,7 +175,7 @@ class _OperationScreenState extends State<OperationScreen> {
         ));
   }
 
-  Widget buildContainerInfoCard() {
+  Widget buildContainerInfoCard(TextTheme textTheme) {
     final BoxDecoration boxDecoration = BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -203,9 +200,7 @@ class _OperationScreenState extends State<OperationScreen> {
           margin: EdgeInsets.only(bottom: 30),
           padding: EdgeInsets.fromLTRB(16, 25, 16, 19),
           decoration: boxDecoration,
-          //width: MediaQuery.of(context).size.width * 0.94,
           width: 336,
-          //height: 200,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,40 +211,18 @@ class _OperationScreenState extends State<OperationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _selectedContainer!.id,
-                      style: GoogleFonts.openSans(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    Text(_selectedContainer!.id, style: textTheme.headline3),
                     SizedBox(height: 5.0),
-                    Text(
-                      'Next Collection H4',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      '12.01.2020(T1)',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
+                    Text('Next Collection', style: textTheme.headline4),
+                    Text('12.01.2020', style: textTheme.bodyText1),
                     SizedBox(height: 5.0),
                     Text(
                       'Fullness Rate',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
+                      style: textTheme.headline4,
                     ),
                     Text(
                       '%${_selectedContainer!.fullnessRate * 100}',
-                      style: GoogleFonts.openSans(
-                          color: Color(0xFF535A72),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
+                      style: textTheme.bodyText1,
                     ),
                   ],
                 ),
@@ -260,7 +233,7 @@ class _OperationScreenState extends State<OperationScreen> {
                 children: [
                   _cardButton(() {
                     _viewModel.navigateToMarker(_selectedContainer!);
-                  }, AppConstant.navigate),
+                  }, AppConstant.navigate, textTheme),
                   SizedBox(
                     width: 22,
                   ),
@@ -278,7 +251,7 @@ class _OperationScreenState extends State<OperationScreen> {
                         showRelocateDialog = false;
                       });
                     }
-                  }, AppConstant.relocate),
+                  }, AppConstant.relocate, textTheme),
                 ],
               )
             ],
@@ -286,7 +259,7 @@ class _OperationScreenState extends State<OperationScreen> {
         ));
   }
 
-  Expanded _cardButton(Function onTap, String title) {
+  Expanded _cardButton(Function onTap, String title, TextTheme textTheme) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(boxShadow: [
@@ -310,10 +283,7 @@ class _OperationScreenState extends State<OperationScreen> {
             },
             child: Text(
               title,
-              style: GoogleFonts.openSans(
-                  color: AppColor.LightColor.color,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+              style: textTheme.button,
             )),
       ),
     );
