@@ -51,6 +51,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: ^1.0.0
+  flutter_launcher_icons: ^0.9.2
+
+flutter_icons:
+  image_path: 'assets/launch_icon.png'
+  android: "launcher_icon"
 
 
 # For information on the generic Dart part of this file, see the

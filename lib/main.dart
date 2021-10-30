@@ -8,6 +8,8 @@ import 'package:google_map_i/operation/operation_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  ///TODO: Set prefereed orientation
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark,
       //statusBarBrightness: Brightness.dark,
