@@ -56,11 +56,12 @@ class ContainerX {
   ///TODO duzenlenecek
   Map<String, dynamic> toJson() => {
         "id": id,
-        "lat": lat,
-        "long": long,
+        //"lat": lat,
+        //"long": long,
+        "position": GeoPoint(lat, long),
         "fullnessRate": fullnessRate,
         "temperature": temperature,
         "sensorId": sensorId,
-        "lastDataDate": lastDataDate,
+        "lastDataDate": Timestamp.fromMillisecondsSinceEpoch(lastDataDate),
       };
 }

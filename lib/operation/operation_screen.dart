@@ -5,6 +5,7 @@ import 'package:google_map_i/connectivity/connectivity_service.dart';
 import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
+import 'package:google_map_i/operation/database_service.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -80,6 +81,11 @@ class _OperationScreenState extends State<OperationScreen> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          DatabaseService().addContainer();
+        },
+      ),
       body: Column(
         children: [
           Expanded(

@@ -8,6 +8,11 @@ import 'package:google_map_i/operation/operation_screen.dart';
 
 import 'evreka_theme.dart';
 
+///TODO: izmir koordinatlarini belirle
+///yeni bir firebase veritabani container100 adinda ve container1000 olarak baslat
+///aralikta 100 adet container dummy data olustur
+///aralikte 1000 adet dummy data olustur
+///
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -49,8 +54,8 @@ class _MyAppState extends State<MyApp> {
 
             theme: theme,
 
-            //home: OperationScreen(),
-            home: LoginScreen(),
+            home: OperationScreen(),
+            //home: LoginScreen(),
           );
         }
 
