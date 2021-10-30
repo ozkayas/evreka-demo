@@ -1,4 +1,4 @@
-package com.example.google_map_i
+package com.evreka_demo_app
 
 import io.flutter.embedding.android.FlutterActivity
 
