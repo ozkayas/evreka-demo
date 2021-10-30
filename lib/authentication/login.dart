@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login_viewmodel.dart';
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordCtr.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
-
+    Loader.hide();
     super.dispose();
   }
 
@@ -105,8 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   handleLogin() async {
+    Loader.show(context, progressIndicator: CircularProgressIndicator());
     var loginResult =
         await _viewModel.loginUser(_usernameCtr.text, _passwordCtr.text);
+    Loader.hide();
     if (loginResult == false) {
       showLoginErrorDialog();
     }
