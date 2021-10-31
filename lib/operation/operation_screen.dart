@@ -22,6 +22,7 @@ class _OperationScreenState extends State<OperationScreen> {
   late List<ContainerX> _containers;
   bool markerSelectionMode = false;
   bool showRelocateDialog = false;
+  DateTime backPressedTime = DateTime.now();
 
   @override
   void initState() {
@@ -47,37 +48,52 @@ class _OperationScreenState extends State<OperationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      /// Adds 100 random containers to Database
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     DatabaseService().addContainer();
-      //   },
-      // ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<ContainerX>>(
-                stream: _viewModel.streamOfContainers(),
-                builder: (context, asyncSnapshot) {
-                  print('streambuilder build');
-                  if (!asyncSnapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.green,
-                      ),
-                    );
-                  } else {
-                    _containers = asyncSnapshot.data!;
+    return WillPopScope(
+      onWillPop: () async {
+        final timeDifference = DateTime.now().difference(backPressedTime);
+        final isExit = timeDifference > Duration(milliseconds: 2500);
+        backPressedTime = DateTime.now();
 
-                    return MapSample(
-                      containers: _containers,
-                      initialCameraPosition: _initialCameraPosition,
-                    );
-                  }
-                }),
-          ),
-        ],
+        if (isExit) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text('Press Again to Exit')));
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        /// Adds 100 random containers to Database
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     DatabaseService().addContainer();
+        //   },
+        // ),
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<List<ContainerX>>(
+                  stream: _viewModel.streamOfContainers(),
+                  builder: (context, asyncSnapshot) {
+                    print('streambuilder build');
+                    if (!asyncSnapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.green,
+                        ),
+                      );
+                    } else {
+                      _containers = asyncSnapshot.data!;
+
+                      return MapSample(
+                        containers: _containers,
+                        initialCameraPosition: _initialCameraPosition,
+                      );
+                    }
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }
