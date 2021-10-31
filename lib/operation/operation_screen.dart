@@ -29,7 +29,6 @@ class _OperationScreenState extends State<OperationScreen> {
     _viewModel.initMarkerIcons();
     _viewModel.setUserPosition();
     letDeviceOrientation();
-    //CameraPosition(target: _viewModel.userPosition, zoom: 19);
   }
 
   Future<void> letDeviceOrientation() async {
@@ -64,14 +63,13 @@ class _OperationScreenState extends State<OperationScreen> {
                   print('streambuilder build');
                   if (!asyncSnapshot.hasData) {
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Colors.green,
+                      ),
                     );
                   } else {
                     _containers = asyncSnapshot.data!;
 
-                    // return MapWidget(
-                    //     containers: _containers,
-                    //     initialCameraPosition: _initialCameraPosition);
                     return MapSample(
                       containers: _containers,
                       initialCameraPosition: _initialCameraPosition,
@@ -84,7 +82,7 @@ class _OperationScreenState extends State<OperationScreen> {
     );
   }
 }
-
+/* 
 class MapWidget extends StatefulWidget {
   const MapWidget({
     Key? key,
@@ -276,6 +274,7 @@ class _MapWidgetState extends State<MapWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _cardButton(() {
+                    ///TODO insert zoom level
                     _viewModel.navigateToMarker(_selectedContainer!);
                   }, AppConstant.navigate, textTheme),
                   SizedBox(
@@ -349,3 +348,4 @@ class _MapWidgetState extends State<MapWidget> {
     // });
   }
 }
+ */

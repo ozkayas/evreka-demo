@@ -70,7 +70,7 @@ class OperationScreenViewModel extends GetxController {
     // streamListDocumentSnapshot.first
     //     .then((value) => print('value = ${value.first['id']}'));
 
-    ///tream<List<DocumentSnaphot>> ==> Stream<List<ContainerX>>
+    ///Stream<List<DocumentSnaphot>> ==> Stream<List<ContainerX>>
     var streamListContainer = streamListDocumentSnapshot.map(
         (listDocumentSnapshot) => listDocumentSnapshot
             .map((documentSnapshot) => ContainerX.fromJson(
@@ -82,22 +82,4 @@ class OperationScreenViewModel extends GetxController {
 
     return streamListContainer;
   }
-
-/*   Stream<List<Marker>> streamOfMarkers() {
-    var containers = _db.fetchContainers();
-
-    ///Stream<QuerySnapshot> ==> Stream<List<DocumentSnaphot>>
-    Stream<List<DocumentSnapshot>> streamListDocumentSnapshot =
-        containers.map((querySnapshot) => querySnapshot.docs);
-
-    ///tream<List<DocumentSnaphot>> ==> Stream<List<Marker>>
-    var streamListMarker = streamListDocumentSnapshot.map(
-        (listDocumentSnapshot) => listDocumentSnapshot
-            .map((documentSnapshot) => ContainerX.fromJson(
-                    documentSnapshot.data() as Map<String, dynamic>)
-                .toMarker(() {},defaultMarkerIcon))
-            .toList());
-
-    return streamListMarker;
-  } */
 }

@@ -33,7 +33,7 @@ class _RelocationScreenState extends State<RelocationScreen> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     var _initialCameraPosition =
-        CameraPosition(target: LatLng(container.lat, container.long), zoom: 12);
+        CameraPosition(target: LatLng(container.lat, container.long), zoom: 19);
     return Scaffold(
       body: Stack(children: [
         GoogleMap(

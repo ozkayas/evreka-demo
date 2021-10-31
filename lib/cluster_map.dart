@@ -1,7 +1,5 @@
-// Clustering maps
-
 import 'dart:async';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +9,7 @@ import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 import 'models/container.dart';
 
@@ -149,7 +148,7 @@ class MapSampleState extends State<MapSample> {
   Future<BitmapDescriptor> _getMarkerBitmap(int size, {String? text}) async {
     if (kIsWeb) size = (size / 2).floor();
 
-    final PictureRecorder pictureRecorder = PictureRecorder();
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     // final Paint paint1 = Paint()..color = Colors.orange;
     // final Paint paint2 = Paint()..color = Colors.white;
@@ -161,7 +160,8 @@ class MapSampleState extends State<MapSample> {
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.8, paint1);
 
     if (text != null) {
-      TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+      TextPainter painter = TextPainter(textDirection: ui.TextDirection.ltr);
+      //TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
       painter.text = TextSpan(
         text: text,
         style: TextStyle(
@@ -177,7 +177,8 @@ class MapSampleState extends State<MapSample> {
     }
 
     final img = await pictureRecorder.endRecording().toImage(size, size);
-    final data = await img.toByteData(format: ImageByteFormat.png) as ByteData;
+    final data =
+        await img.toByteData(format: ui.ImageByteFormat.png) as ByteData;
 
     return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
   }
@@ -228,7 +229,9 @@ class MapSampleState extends State<MapSample> {
                     SizedBox(height: 5.0),
                     Text('Next Collection', style: textTheme.headline4),
                     Text(
-                        '${DateTime.fromMillisecondsSinceEpoch(_selectedContainer!.lastDataDate)}',
+                        DateFormat('dd.MM.yyyy').format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                _selectedContainer!.lastDataDate)),
                         style: textTheme.bodyText1),
                     SizedBox(height: 5.0),
                     Text(
