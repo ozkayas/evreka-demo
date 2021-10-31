@@ -102,7 +102,9 @@ class MapSampleState extends State<MapSample> {
     return Container(
         child: Stack(children: [
       GoogleMap(
-          onTap: dismissMarkerSelection,
+          onTap: (_) {
+            dismissMarkerSelection();
+          },
           mapType: MapType.normal,
           initialCameraPosition: _initialCameraPosition,
           markers: markers,
@@ -113,7 +115,7 @@ class MapSampleState extends State<MapSample> {
           onCameraMove: _manager.onCameraMove,
           onCameraIdle: _manager.updateMap),
       if (markerSelectionMode) buildContainerInfoCard(textTheme),
-      // if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
+      if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
     ]));
   }
 
@@ -180,7 +182,7 @@ class MapSampleState extends State<MapSample> {
     return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
   }
 
-  void dismissMarkerSelection(_) {
+  void dismissMarkerSelection() {
     markerSelectionMode = false;
     _selectedContainer = null;
     _manager.updateMap();
@@ -255,6 +257,7 @@ class MapSampleState extends State<MapSample> {
 
                     // If user taps backbutton result returns as null
                     if (result ?? false) {
+                      dismissMarkerSelection();
                       showRelocateDialog = true;
                       setState(() {
                         showRelocateDialog = true;
@@ -262,6 +265,7 @@ class MapSampleState extends State<MapSample> {
                       });
 
                       await Future.delayed(Duration(seconds: 3));
+
                       setState(() {
                         showRelocateDialog = false;
                       });
@@ -269,6 +273,53 @@ class MapSampleState extends State<MapSample> {
                   }, AppConstant.relocate, textTheme),
                 ],
               )
+            ],
+          ),
+        ));
+  }
+
+  Widget buildRelocatiInfoCard(TextTheme textTheme) {
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
+
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 30),
+          padding: EdgeInsets.fromLTRB(15, 35, 15, 35),
+          decoration: boxDecoration,
+          //width: MediaQuery.of(context).size.width * 0.94,
+          width: 336,
+          //height: 200,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppConstant.relocateSuccesfullMessage,
+                    style: textTheme.bodyText1,
+                  ),
+                ],
+              ),
             ],
           ),
         ));
