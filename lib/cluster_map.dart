@@ -33,8 +33,11 @@ class MapSampleState extends State<MapSample> {
   OperationScreenViewModel _viewModel = Get.find();
   late ClusterManager _manager;
   late List<ContainerX> _containers;
+  bool markerSelectionMode = false;
+  bool showRelocateDialog = false;
 
   Completer<GoogleMapController> _controller = Completer();
+  ContainerX? _selectedContainer;
 
   Set<Marker> markers = Set();
   late final CameraPosition _initialCameraPosition;
@@ -48,12 +51,6 @@ class MapSampleState extends State<MapSample> {
         .map((container) => Place(
             name: container.id, latLng: LatLng(container.lat, container.long)))
         .toList();
-  }
-
-  @override
-  void didChangeDependencies() {
-    fillItems();
-    super.didChangeDependencies();
   }
 
   @override
@@ -72,22 +69,40 @@ class MapSampleState extends State<MapSample> {
   }
 
   void _updateMarkers(Set<Marker> markers) {
-    //print('Updated ${markers.length} markers');
     setState(() {
       this.markers = markers;
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void handleMarkerClick(String id) {
+    markerSelectionMode = true;
+    setSelectedContainer(id);
+    _manager.updateMap();
+    //setState(() {});
+  }
+
+  void setSelectedContainer(String id) {
+    _selectedContainer =
+        _containers.firstWhere((container) => container.id == id);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('googlemap build');
+    TextTheme textTheme = Theme.of(context).textTheme;
     _manager.setItems(widget._containers
         .map((container) => Place(
             name: container.id, latLng: LatLng(container.lat, container.long)))
         .toList());
 
     return Container(
-      child: GoogleMap(
+        child: Stack(children: [
+      GoogleMap(
+          onTap: dismissMarkerSelection,
           mapType: MapType.normal,
           initialCameraPosition: _initialCameraPosition,
           markers: markers,
@@ -97,18 +112,9 @@ class MapSampleState extends State<MapSample> {
           },
           onCameraMove: _manager.onCameraMove,
           onCameraIdle: _manager.updateMap),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _manager.setItems(<Place>[
-      //       for (int i = 0; i < 100; i++)
-      //         Place(
-      //             name: 'New Place ${DateTime.now()} $i',
-      //             latLng: LatLng(48.858265 + i * 0.01, 2.350107))
-      //     ]);
-      //   },
-      //   child: Icon(Icons.update),
-      // ),
-    );
+      if (markerSelectionMode) buildContainerInfoCard(textTheme),
+      // if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
+    ]));
   }
 
   Future<Marker> Function(Cluster<Place>) get _markerBuilder =>
@@ -116,14 +122,25 @@ class MapSampleState extends State<MapSample> {
         return Marker(
           markerId: MarkerId(cluster.getId()),
           position: cluster.location,
-          onTap: () {
-            print('---- $cluster');
-            cluster.items.forEach((p) => print(p));
-          },
+          onTap: cluster.isMultiple
+              //if cluster  method
+              ? () {
+                  print('---- $cluster');
+                  cluster.items.forEach((p) => print(p));
+                }
+              // if single marker method
+              : () {
+                  print('single marker clicked ${cluster.items.first.name}');
+                  handleMarkerClick(cluster.items.first.name);
+                },
           icon: cluster.isMultiple
               ? await _getMarkerBitmap(cluster.isMultiple ? 125 : 100,
                   text: cluster.isMultiple ? cluster.count.toString() : null)
-              : _viewModel.defaultMarkerIcon!,
+              : (_selectedContainer == null)
+                  ? _viewModel.defaultMarkerIcon!
+                  : (cluster.items.first.name == _selectedContainer!.id)
+                      ? _viewModel.selectedMarkerIcon!
+                      : _viewModel.defaultMarkerIcon!,
         );
       };
 
@@ -161,6 +178,130 @@ class MapSampleState extends State<MapSample> {
     final data = await img.toByteData(format: ImageByteFormat.png) as ByteData;
 
     return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
+  }
+
+  void dismissMarkerSelection(_) {
+    markerSelectionMode = false;
+    _selectedContainer = null;
+    _manager.updateMap();
+  }
+
+  Widget buildContainerInfoCard(TextTheme textTheme) {
+    final BoxDecoration boxDecoration = BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(2, 2), // changes position of shadow
+          ),
+          BoxShadow(
+            color: AppColor.ShadowColor.color,
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(-2, -2), // changes position of shadow
+          )
+        ],
+        color: AppColor.LightColor.color,
+        borderRadius: BorderRadius.circular(8.0));
+
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 30),
+          padding: EdgeInsets.fromLTRB(16, 25, 16, 19),
+          decoration: boxDecoration,
+          width: 336,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_selectedContainer!.id, style: textTheme.headline3),
+                    SizedBox(height: 5.0),
+                    Text('Next Collection', style: textTheme.headline4),
+                    Text('12.01.2020', style: textTheme.bodyText1),
+                    SizedBox(height: 5.0),
+                    Text(
+                      'Fullness Rate',
+                      style: textTheme.headline4,
+                    ),
+                    Text(
+                      '%${_selectedContainer!.fullnessRate * 100}',
+                      style: textTheme.bodyText1,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 13.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _cardButton(() {
+                    _viewModel.navigateToMarker(_selectedContainer!);
+                  }, AppConstant.navigate, textTheme),
+                  SizedBox(
+                    width: 22,
+                  ),
+                  _cardButton(() async {
+                    final result = await _viewModel.openRelocateScreen(
+                        context, _selectedContainer!);
+                    markerSelectionMode = false;
+
+                    // If user taps backbutton result returns as null
+                    if (result ?? false) {
+                      showRelocateDialog = true;
+                      setState(() {
+                        showRelocateDialog = true;
+                        //createMarkers();
+                      });
+
+                      await Future.delayed(Duration(seconds: 3));
+                      setState(() {
+                        showRelocateDialog = false;
+                      });
+                    }
+                  }, AppConstant.relocate, textTheme),
+                ],
+              )
+            ],
+          ),
+        ));
+  }
+
+  Expanded _cardButton(Function onTap, String title, TextTheme textTheme) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: AppColor.ShadowColorGreen.color,
+            spreadRadius: 0,
+            blurRadius: 15,
+            offset: Offset(0, 5), // changes position of shadow
+          ),
+        ]),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              primary: AppColor.Green.color,
+            ),
+            onPressed: () {
+              onTap();
+            },
+            child: Text(
+              title,
+              style: textTheme.button,
+            )),
+      ),
+    );
   }
 }
 

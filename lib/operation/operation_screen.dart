@@ -108,16 +108,16 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
     _containers = widget._containers;
-    createMarkers();
+    // createMarkers();
   }
 
   ///Fill markers with default color, at first build & no marker selected build
-  void createMarkers() {
+/*   void createMarkers() {
     _markers = _containers
         .map((container) =>
             container.toMarker(handleMarkerClick, _viewModel.defaultMarkerIcon))
         .toSet();
-  }
+  } */
 
   void setSelectedContainer(String id) {
     _selectedContainer =
@@ -291,7 +291,7 @@ class _MapWidgetState extends State<MapWidget> {
                       showRelocateDialog = true;
                       setState(() {
                         showRelocateDialog = true;
-                        createMarkers();
+                        //createMarkers();
                       });
 
                       await Future.delayed(Duration(seconds: 3));
