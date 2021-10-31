@@ -12,7 +12,7 @@ class LoginViewModel extends GetxController {
         await _authManager.loginUser(User(name: username, password: password));
 
     if (result) {
-      Get.to(OperationScreen());
+      Get.off(OperationScreen());
     }
 
     return result;

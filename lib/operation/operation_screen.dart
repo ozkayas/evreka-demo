@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/cluster_map.dart';
@@ -33,8 +34,19 @@ class _OperationScreenState extends State<OperationScreen> {
     super.initState();
     _viewModel.initMarkerIcons();
     _viewModel.setUserPosition();
+    letDeviceOrientation();
     // _initialCameraPosition =
     //     CameraPosition(target: _viewModel.userPosition, zoom: 19);
+  }
+
+  Future<void> letDeviceOrientation() async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    print('=======  orient');
   }
 
   @override
@@ -108,7 +120,6 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
     _containers = widget._containers;
-    // createMarkers();
   }
 
   ///Fill markers with default color, at first build & no marker selected build

@@ -99,10 +99,14 @@ class RelocationInfoCard extends StatelessWidget {
         color: AppColor.LightColor.color,
         borderRadius: BorderRadius.circular(8.0));
 
+    var _isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return Align(
-        alignment: Alignment.bottomCenter,
+        alignment: _isPortrait ? Alignment.bottomCenter : Alignment.bottomRight,
         child: Container(
-          margin: EdgeInsets.only(bottom: 30),
+          margin: _isPortrait
+              ? EdgeInsets.only(bottom: 30)
+              : EdgeInsets.only(bottom: 5, right: 5),
           padding: EdgeInsets.fromLTRB(15, 16, 16, 15),
           decoration: boxDecoration,
           //width: MediaQuery.of(context).size.width * 0.94,

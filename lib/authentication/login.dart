@@ -27,25 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
   }
 
   @override
   void dispose() {
+    print('login dispose calisti');
     _usernameCtr.dispose();
     _passwordCtr.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
     Loader.hide();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+
     super.dispose();
   }
 
@@ -131,7 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   handleLogin() async {
-    Loader.show(context, progressIndicator: CircularProgressIndicator());
+    Loader.show(context,
+        progressIndicator: CircularProgressIndicator(
+          color: AppColor.Green.color,
+        ));
     var loginResult =
         await _viewModel.loginUser(_usernameCtr.text, _passwordCtr.text);
     Loader.hide();

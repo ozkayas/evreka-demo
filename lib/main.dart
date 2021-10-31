@@ -9,13 +9,16 @@ import 'package:google_map_i/operation/operation_screen.dart';
 
 import 'evreka_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  ///TODO: Set prefereed orientation
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark,
-      statusBarColor: Colors.transparent)); // transparent status bar
+      statusBarColor: Colors.transparent));
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]); // transparent status bar
   runApp(MyApp());
 }
 
