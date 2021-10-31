@@ -6,62 +6,54 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:google_map_i/contants.dart';
-import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'models/container.dart';
-
-class MapSample extends StatefulWidget {
-  const MapSample({
-    Key? key,
-    required List<ContainerX> containers,
-    required CameraPosition initialCameraPosition,
-  })  : _containers = containers,
-        _initialCameraPosition = initialCameraPosition,
-        super(key: key);
-  final List<ContainerX> _containers;
-  final CameraPosition _initialCameraPosition;
-
+class MapSampleOriginal extends StatefulWidget {
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<MapSampleOriginal> createState() => MapSampleOriginalState();
 }
 
-class MapSampleState extends State<MapSample> {
-  OperationScreenViewModel _viewModel = Get.find();
+class MapSampleOriginalState extends State<MapSampleOriginal> {
   late ClusterManager _manager;
-  late List<ContainerX> _containers;
 
   Completer<GoogleMapController> _controller = Completer();
 
   Set<Marker> markers = Set();
-  late final CameraPosition _initialCameraPosition;
-  // final CameraPosition _parisCameraPosition =
-  //     CameraPosition(target: LatLng(48.856613, 2.352222), zoom: 12.0);
 
-  late List<Place> items;
+  final CameraPosition _parisCameraPosition =
+      CameraPosition(target: LatLng(48.856613, 2.352222), zoom: 12.0);
 
-  void fillItems() {
-    items = widget._containers
-        .map((container) => Place(
-            name: container.id, latLng: LatLng(container.lat, container.long)))
-        .toList();
-  }
-
-  @override
-  void didChangeDependencies() {
-    fillItems();
-    super.didChangeDependencies();
-  }
+  List<Place> items = [
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Place $i',
+          latLng: LatLng(48.848200 + i * 0.001, 2.319124 + i * 0.001)),
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Restaurant $i',
+          //isClosed: i % 2 == 0,
+          latLng: LatLng(48.858265 - i * 0.001, 2.350107 + i * 0.001)),
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Bar $i',
+          latLng: LatLng(48.858265 + i * 0.01, 2.350107 - i * 0.01)),
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Hotel $i',
+          latLng: LatLng(48.858265 - i * 0.1, 2.350107 - i * 0.01)),
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Test $i',
+          latLng: LatLng(66.160507 + i * 0.1, -153.369141 + i * 0.1)),
+    for (int i = 0; i < 1; i++)
+      Place(
+          name: 'Test2 $i',
+          latLng: LatLng(-36.848461 + i * 1, 169.763336 + i * 1)),
+  ];
 
   @override
   void initState() {
-    print('initstate build');
-    _initialCameraPosition = widget._initialCameraPosition;
-    _containers = widget._containers;
-    fillItems();
     _manager = _initClusterManager();
     super.initState();
   }
@@ -80,16 +72,10 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    print('googlemap build');
-    _manager.setItems(widget._containers
-        .map((container) => Place(
-            name: container.id, latLng: LatLng(container.lat, container.long)))
-        .toList());
-
-    return Container(
-      child: GoogleMap(
+    return new Scaffold(
+      body: GoogleMap(
           mapType: MapType.normal,
-          initialCameraPosition: _initialCameraPosition,
+          initialCameraPosition: _parisCameraPosition,
           markers: markers,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
@@ -97,17 +83,17 @@ class MapSampleState extends State<MapSample> {
           },
           onCameraMove: _manager.onCameraMove,
           onCameraIdle: _manager.updateMap),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _manager.setItems(<Place>[
-      //       for (int i = 0; i < 100; i++)
-      //         Place(
-      //             name: 'New Place ${DateTime.now()} $i',
-      //             latLng: LatLng(48.858265 + i * 0.01, 2.350107))
-      //     ]);
-      //   },
-      //   child: Icon(Icons.update),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _manager.setItems(<Place>[
+            for (int i = 0; i < 100; i++)
+              Place(
+                  name: 'New Place ${DateTime.now()} $i',
+                  latLng: LatLng(48.858265 + i * 0.01, 2.350107))
+          ]);
+        },
+        child: Icon(Icons.update),
+      ),
     );
   }
 
@@ -120,10 +106,8 @@ class MapSampleState extends State<MapSample> {
             print('---- $cluster');
             cluster.items.forEach((p) => print(p));
           },
-          icon: cluster.isMultiple
-              ? await _getMarkerBitmap(cluster.isMultiple ? 125 : 100,
-                  text: cluster.isMultiple ? cluster.count.toString() : null)
-              : _viewModel.defaultMarkerIcon!,
+          icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75,
+              text: cluster.isMultiple ? cluster.count.toString() : null),
         );
       };
 
@@ -132,10 +116,8 @@ class MapSampleState extends State<MapSample> {
 
     final PictureRecorder pictureRecorder = PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
-    // final Paint paint1 = Paint()..color = Colors.orange;
-    // final Paint paint2 = Paint()..color = Colors.white;
-    final Paint paint1 = Paint()..color = AppColor.Green.color;
-    final Paint paint2 = Paint()..color = AppColor.ShadowColorGreen.color;
+    final Paint paint1 = Paint()..color = Colors.orange;
+    final Paint paint2 = Paint()..color = Colors.white;
 
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.0, paint1);
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.2, paint2);

@@ -37,7 +37,7 @@ class DatabaseService {
     final CollectionReference containersReference =
         firestore.collection('containers');
 
-    var containersToAdd = createRandomContainers(100);
+    var containersToAdd = createRandomContainers(5);
 
     containersToAdd.forEach((container) {
       containersReference.doc(container.id).set(container.toJson());

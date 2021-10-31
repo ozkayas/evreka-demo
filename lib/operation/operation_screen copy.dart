@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_map_i/cluster_map.dart';
 import 'package:google_map_i/connectivity/connectivity_service.dart';
 import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
@@ -10,17 +9,17 @@ import 'package:google_map_i/operation/database_service.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class OperationScreen extends StatefulWidget {
-  const OperationScreen({Key? key}) : super(key: key);
+class OperationScreenCopy extends StatefulWidget {
+  const OperationScreenCopy({Key? key}) : super(key: key);
 
   @override
-  _OperationScreenState createState() => _OperationScreenState();
+  _OperationScreenCopyState createState() => _OperationScreenCopyState();
 }
 
-class _OperationScreenState extends State<OperationScreen> {
+class _OperationScreenCopyState extends State<OperationScreenCopy> {
   OperationScreenViewModel _viewModel = Get.put(OperationScreenViewModel());
   var _initialCameraPosition =
-      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 14);
+      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 19);
 
   //Set<Marker> _markers = {};
   late List<ContainerX> _containers;
@@ -56,21 +55,18 @@ class _OperationScreenState extends State<OperationScreen> {
             child: StreamBuilder<List<ContainerX>>(
                 stream: _viewModel.streamOfContainers(),
                 builder: (context, asyncSnapshot) {
-                  print('streambuilder build');
                   if (!asyncSnapshot.hasData) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
                   } else {
                     _containers = asyncSnapshot.data!;
-
-                    // return MapWidget(
-                    //     containers: _containers,
-                    //     initialCameraPosition: _initialCameraPosition);
-                    return MapSample(
-                      containers: _containers,
-                      initialCameraPosition: _initialCameraPosition,
-                    );
+                    //if (!markerSelectionMode) {
+                    //createMarkers();
+                    //}
+                    return MapWidget(
+                        containers: _containers,
+                        initialCameraPosition: _initialCameraPosition);
                   }
                 }),
           ),
