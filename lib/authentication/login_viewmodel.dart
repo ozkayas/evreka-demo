@@ -14,7 +14,6 @@ class LoginViewModel extends GetxController {
     if (result) {
       Get.off(OperationScreen());
     }
-
     return result;
   }
 }

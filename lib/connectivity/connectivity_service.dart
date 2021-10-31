@@ -8,6 +8,15 @@ class ConnectivityService {
 
   var isDeviceConnected = false;
 
+  Future<ConnectivityStatus> hasConnection() async {
+    await Future.delayed(Duration(seconds: 3));
+    ConnectivityResult result = await Connectivity().checkConnectivity();
+    if (result != ConnectivityResult.none) {
+      isDeviceConnected = await DataConnectionChecker().hasConnection;
+    }
+    return _getStatusFromResult(result);
+  }
+
   ConnectivityService() {
     // Subscribe to the connectivity Chanaged Steam
     Connectivity()

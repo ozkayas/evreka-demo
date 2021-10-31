@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login_viewmodel.dart';
-import 'package:google_map_i/connectivity/network_checker.dart';
+import 'package:google_map_i/connectivity/connectivity_service.dart';
 import 'package:google_map_i/contants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,12 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passwordFocus = FocusNode();
   bool _isObscure = true;
   bool _loginError = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -56,70 +48,84 @@ class _LoginScreenState extends State<LoginScreen> {
           end: Alignment.bottomCenter),
     );
 
-    return NetworkSensitive(
-      child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Stack(
-            children: [
-              Container(
-                height: height,
-                width: width,
-                decoration: boxDecoration,
-                child: Padding(
-                  padding: outerPadding,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Spacer(flex: 130),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.44,
-                          child: Image.asset(AppConstant.urlLogoPng)),
-                      Spacer(flex: 80),
-                      Text(AppConstant.loginScreenMessage,
-                          style: textTheme.bodyText2),
-                      Spacer(flex: 56),
-                      Form(
-                          child: Column(
-                        children: [
-                          textFormField(
-                            controller: _usernameCtr,
-                            suffixFunction: _usernameCtr.clear,
-                            focusNode: _usernameFocus,
-                            labelText: AppConstant.username,
-                            textTheme: textTheme,
-                          ),
-                          SizedBox(height: 45),
-                          textFormField(
-                              controller: _passwordCtr,
-                              suffixFunction: () {
-                                setState(() {
-                                  _isObscure = !_isObscure;
-                                });
-                              },
-                              focusNode: _passwordFocus,
-                              labelText: AppConstant.password,
-                              textTheme: textTheme,
-                              obscureText: _isObscure),
-                          SizedBox(height: 220),
-                          Center(
-                            child: _loginButton(
-                                handleLogin,
-                                AppConstant.login,
-                                _usernameCtr.text.isNotEmpty &&
-                                    _passwordCtr.text.isNotEmpty,
-                                textTheme),
-                          )
-                        ],
-                      ))
-                    ],
-                  ),
+    return FutureBuilder<ConnectivityStatus>(
+        future: ConnectivityService().hasConnection(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return WaitingLoaderWidget();
+          } else {
+            if (snapshot.data == ConnectivityStatus.CellularNoNet ||
+                snapshot.data == ConnectivityStatus.WifiNoNet) {
+              return NoNetworkWidget();
+            } else if (snapshot.data == ConnectivityStatus.Offline) {
+              return OfflineDevice();
+            } else {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Stack(
+                  children: [
+                    Container(
+                      height: height,
+                      width: width,
+                      decoration: boxDecoration,
+                      child: Padding(
+                        padding: outerPadding,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Spacer(flex: 130),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.44,
+                                child: Image.asset(AppConstant.urlLogoPng)),
+                            Spacer(flex: 80),
+                            Text(AppConstant.loginScreenMessage,
+                                style: textTheme.bodyText2),
+                            Spacer(flex: 56),
+                            Form(
+                                child: Column(
+                              children: [
+                                textFormField(
+                                  controller: _usernameCtr,
+                                  suffixFunction: _usernameCtr.clear,
+                                  focusNode: _usernameFocus,
+                                  labelText: AppConstant.username,
+                                  textTheme: textTheme,
+                                ),
+                                SizedBox(height: 45),
+                                textFormField(
+                                    controller: _passwordCtr,
+                                    suffixFunction: () {
+                                      setState(() {
+                                        _isObscure = !_isObscure;
+                                      });
+                                    },
+                                    focusNode: _passwordFocus,
+                                    labelText: AppConstant.password,
+                                    textTheme: textTheme,
+                                    obscureText: _isObscure),
+                                SizedBox(height: 220),
+                                Center(
+                                  child: _loginButton(
+                                      handleLogin,
+                                      AppConstant.login,
+                                      _usernameCtr.text.isNotEmpty &&
+                                          _passwordCtr.text.isNotEmpty,
+                                      textTheme),
+                                )
+                              ],
+                            ))
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (_loginError) buildErrorDialog(textTheme)
+                  ],
                 ),
-              ),
-              if (_loginError) buildErrorDialog(textTheme)
-            ],
-          )),
-    );
+              );
+            }
+          }
+        });
   }
 
   handleLogin() async {
@@ -305,5 +311,67 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ));
+  }
+}
+
+class WaitingLoaderWidget extends StatelessWidget {
+  const WaitingLoaderWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+            child: FractionallySizedBox(
+      widthFactor: 0.5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          LinearProgressIndicator(
+            color: AppColor.ShadowColorGreen.color,
+            backgroundColor: AppColor.ShadowColorGreen.color.withAlpha(120),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text('Connecting...'),
+        ],
+      ),
+    )));
+  }
+}
+
+class NoNetworkWidget extends StatelessWidget {
+  const NoNetworkWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          "Please check your network settings and try again later",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16.0),
+        ),
+      ),
+    );
+  }
+}
+
+class OfflineDevice extends StatelessWidget {
+  const OfflineDevice({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          "Please turn on either Wifi or Cellular Network",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16.0),
+        ),
+      ),
+    );
   }
 }

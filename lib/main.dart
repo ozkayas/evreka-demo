@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login.dart';
 import 'package:google_map_i/cluster_map.dart';
+import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/operation/operation_screen.dart';
 
 import 'evreka_theme.dart';
@@ -39,12 +40,10 @@ class _MyAppState extends State<MyApp> {
       // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
-        // Check for errors
         if (snapshot.hasError) {
-          return Center(child: Text('Unknown Problem Occured'));
+          return Center(child: Text('Server Connection Error'));
         }
 
-        // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
@@ -54,13 +53,13 @@ class _MyAppState extends State<MyApp> {
 
             //home: OperationScreen(),
             home: LoginScreen(),
-            //home: MapSample(),
           );
         }
 
-        // Otherwise, show something whilst waiting for initialization to complete
         return Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: AppColor.ShadowColorGreen.color,
+          ),
         );
       },
     );
