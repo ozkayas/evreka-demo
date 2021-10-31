@@ -25,7 +25,6 @@ class AppConstant {
   static String urlPasswordPng = 'assets/password.png';
 }
 
-///TODO: Apply color for all possible options
 enum AppColor {
   DarkGrey,
   Yellow,

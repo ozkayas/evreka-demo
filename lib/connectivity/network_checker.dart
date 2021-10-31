@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:google_map_i/connectivity/connectivity_service.dart';
 import 'package:google_map_i/contants.dart';
 
@@ -133,3 +133,4 @@ class OfflineDevice extends StatelessWidget {
     );
   }
 }
+ */

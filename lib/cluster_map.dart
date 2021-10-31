@@ -227,7 +227,9 @@ class MapSampleState extends State<MapSample> {
                     Text(_selectedContainer!.id, style: textTheme.headline3),
                     SizedBox(height: 5.0),
                     Text('Next Collection', style: textTheme.headline4),
-                    Text('12.01.2020', style: textTheme.bodyText1),
+                    Text(
+                        '${DateTime.fromMillisecondsSinceEpoch(_selectedContainer!.lastDataDate)}',
+                        style: textTheme.bodyText1),
                     SizedBox(height: 5.0),
                     Text(
                       'Fullness Rate',

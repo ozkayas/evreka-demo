@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/cluster_map.dart';
-import 'package:google_map_i/connectivity/connectivity_service.dart';
-import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
-import 'package:google_map_i/operation/database_service.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -21,13 +17,11 @@ class OperationScreen extends StatefulWidget {
 class _OperationScreenState extends State<OperationScreen> {
   OperationScreenViewModel _viewModel = Get.put(OperationScreenViewModel());
   var _initialCameraPosition =
-      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 14);
+      CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 12);
 
-  //Set<Marker> _markers = {};
   late List<ContainerX> _containers;
   bool markerSelectionMode = false;
   bool showRelocateDialog = false;
-  //ContainerX? _selectedContainer;
 
   @override
   void initState() {
@@ -35,8 +29,7 @@ class _OperationScreenState extends State<OperationScreen> {
     _viewModel.initMarkerIcons();
     _viewModel.setUserPosition();
     letDeviceOrientation();
-    // _initialCameraPosition =
-    //     CameraPosition(target: _viewModel.userPosition, zoom: 19);
+    //CameraPosition(target: _viewModel.userPosition, zoom: 19);
   }
 
   Future<void> letDeviceOrientation() async {
@@ -46,7 +39,6 @@ class _OperationScreenState extends State<OperationScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    print('=======  orient');
   }
 
   @override
@@ -57,11 +49,12 @@ class _OperationScreenState extends State<OperationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          DatabaseService().addContainer();
-        },
-      ),
+      /// Adds 100 random containers to Database
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     DatabaseService().addContainer();
+      //   },
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -171,12 +164,8 @@ class _MapWidgetState extends State<MapWidget> {
         },
         markers: _markers,
         initialCameraPosition: widget._initialCameraPosition,
-        // initialCameraPosition: CameraPosition(
-        //     target: _viewModel.userPosition, zoom: 19),
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
-        // onMapCreated: (controller) =>
-        //     _googleMapController = controller,
       ),
       if (markerSelectionMode) buildContainerInfoCard(textTheme),
       if (showRelocateDialog) buildRelocatiInfoCard(textTheme)

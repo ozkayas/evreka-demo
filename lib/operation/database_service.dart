@@ -47,9 +47,9 @@ class DatabaseService {
   List<ContainerX> createRandomContainers(int n) {
     List<ContainerX> list = [];
     var minLat = 38.477;
-    var maxLat = 38.550;
+    var maxLat = 38.850;
     var minLong = 27.030;
-    var maxLong = 27.215;
+    var maxLong = 27.515;
 
     double doubleInRange(num start, num end) =>
         Random().nextDouble() * (end - start) + start;

@@ -53,7 +53,6 @@ class ContainerX {
         onTap(this.id);
       });
 
-  ///TODO duzenlenecek
   Map<String, dynamic> toJson() => {
         "id": id,
         //"lat": lat,

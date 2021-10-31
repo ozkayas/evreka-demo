@@ -23,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    print('login dispose calisti');
     _usernameCtr.dispose();
     _passwordCtr.dispose();
     _usernameFocus.dispose();

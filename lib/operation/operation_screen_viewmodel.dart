@@ -24,7 +24,7 @@ class OperationScreenViewModel extends GetxController {
     userPosition = await locationService.getLocation();
   }
 
-  /// TODO: assetsler icinden ayirilacak
+  /// TODO: AppConfig gibi bir yere tasinabilir
   BitmapDescriptor? defaultMarkerIcon;
   BitmapDescriptor? selectedMarkerIcon;
 
@@ -41,16 +41,13 @@ class OperationScreenViewModel extends GetxController {
     return result;
   }
 
-  /// TODO: bu metot disari cikabilir, appconfig gibi bi yere
+  /// TODO: bu metot disari cikabilir
   initMarkerIcons() async {
     var markerIcon =
         await getBytesFromAsset(AppConstant.urlHouseholdBinPng, 110);
     defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
     markerIcon = await getBytesFromAsset(AppConstant.urlBatteryBinPng, 110);
     selectedMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
-
-    // await BitmapDescriptor.fromAssetImage(
-    //     ImageConfiguration(size: Size(30, 30)), 'assets/household_bin.png');
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

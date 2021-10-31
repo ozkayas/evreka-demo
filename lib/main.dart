@@ -2,12 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_map_i/authentication/login.dart';
-import 'package:google_map_i/cluster_map.dart';
 import 'package:google_map_i/contants.dart';
-import 'package:google_map_i/operation/operation_screen.dart';
-
 import 'evreka_theme.dart';
 
 Future<void> main() async {

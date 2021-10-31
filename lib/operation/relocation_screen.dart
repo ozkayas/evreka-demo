@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_map_i/connectivity/network_checker.dart';
 import 'package:google_map_i/contants.dart';
 import 'package:google_map_i/models/container.dart';
 import 'package:google_map_i/operation/operation_screen_viewmodel.dart';
