@@ -21,12 +21,11 @@ class _OperationScreenState extends State<OperationScreen> {
   var _initialCameraPosition =
       CameraPosition(target: LatLng(38.4762271, 27.0778775), zoom: 19);
 
-  //late GoogleMapController _googleMapController;
-  Set<Marker> _markers = {};
+  //Set<Marker> _markers = {};
   late List<ContainerX> _containers;
   bool markerSelectionMode = false;
   bool showRelocateDialog = false;
-  ContainerX? _selectedContainer;
+  //ContainerX? _selectedContainer;
 
   @override
   void initState() {
@@ -39,12 +38,77 @@ class _OperationScreenState extends State<OperationScreen> {
 
   @override
   void dispose() {
-    // _googleMapController.dispose();
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          DatabaseService().addContainer();
+        },
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<List<ContainerX>>(
+                stream: _viewModel.streamOfContainers(),
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    _containers = asyncSnapshot.data!;
+                    //if (!markerSelectionMode) {
+                    //createMarkers();
+                    //}
+                    return MapWidget(
+                        containers: _containers,
+                        initialCameraPosition: _initialCameraPosition);
+                  }
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MapWidget extends StatefulWidget {
+  const MapWidget({
+    Key? key,
+    required List<ContainerX> containers,
+    required CameraPosition initialCameraPosition,
+  })  : _initialCameraPosition = initialCameraPosition,
+        _containers = containers,
+        super(key: key);
+
+  final CameraPosition _initialCameraPosition;
+  final List<ContainerX> _containers;
+
+  @override
+  _MapWidgetState createState() => _MapWidgetState();
+}
+
+class _MapWidgetState extends State<MapWidget> {
+  OperationScreenViewModel _viewModel = Get.find();
+  var markerSelectionMode = false;
+  bool showRelocateDialog = false;
+  late List<ContainerX> _containers;
+  ContainerX? _selectedContainer;
+  late Set<Marker> _markers;
+
+  @override
+  void initState() {
+    super.initState();
+    _containers = widget._containers;
+    createMarkers();
+  }
+
   ///Fill markers with default color, at first build & no marker selected build
-  void fillMarkers() {
+  void createMarkers() {
     _markers = _containers
         .map((container) =>
             container.toMarker(handleMarkerClick, _viewModel.defaultMarkerIcon))
@@ -65,73 +129,43 @@ class _OperationScreenState extends State<OperationScreen> {
         )
         .toSet();
 
-    setState(() {
-      _markers = updatedMarkers;
-    });
+    // setState(() {
+    _markers = updatedMarkers;
+    // });
   }
 
   void handleMarkerClick(String id) {
     markerSelectionMode = true;
-
-    changeColorOfSelectedMarker(id);
     setSelectedContainer(id);
+    changeColorOfSelectedMarker(id);
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          DatabaseService().addContainer();
+
+    return Stack(children: [
+      GoogleMap(
+        onTap: (_) {
+          setState(() {
+            markerSelectionMode = false;
+            resetMarkerIcons();
+          });
         },
+        markers: _markers,
+        initialCameraPosition: widget._initialCameraPosition,
+        // initialCameraPosition: CameraPosition(
+        //     target: _viewModel.userPosition, zoom: 19),
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: false,
+        // onMapCreated: (controller) =>
+        //     _googleMapController = controller,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<ContainerX>>(
-                stream: _viewModel.streamOfContainers(),
-                builder: (context, asyncSnapshot) {
-                  if (!asyncSnapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    //List<ContainerX> data = asyncSnapshot.data!;
-                    _containers = asyncSnapshot.data!;
-                    if (!markerSelectionMode) {
-                      fillMarkers();
-                    }
-                    return Stack(children: [
-                      GoogleMap(
-                        onTap: (_) {
-                          setState(() {
-                            markerSelectionMode = false;
-                          });
-                        },
-                        markers: _markers,
-                        initialCameraPosition: _initialCameraPosition,
-                        // initialCameraPosition: CameraPosition(
-                        //     target: _viewModel.userPosition, zoom: 19),
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        // onMapCreated: (controller) =>
-                        //     _googleMapController = controller,
-                      ),
-                      if (markerSelectionMode)
-                        buildContainerInfoCard(textTheme),
-                      if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
-                      // ContainerInfoCard(
-                      //   container: _selectedContainer!,
-                      //   viewModel: _viewModel,
-                      // )
-                    ]);
-                  }
-                }),
-          ),
-        ],
-      ),
-    );
+      if (markerSelectionMode) buildContainerInfoCard(textTheme),
+      if (showRelocateDialog) buildRelocatiInfoCard(textTheme)
+    ]);
   }
 
   Widget buildRelocatiInfoCard(TextTheme textTheme) {
@@ -251,6 +285,10 @@ class _OperationScreenState extends State<OperationScreen> {
                     // If user taps backbutton result returns as null
                     if (result ?? false) {
                       showRelocateDialog = true;
+                      setState(() {
+                        showRelocateDialog = true;
+                        createMarkers();
+                      });
 
                       await Future.delayed(Duration(seconds: 3));
                       setState(() {
@@ -293,5 +331,17 @@ class _OperationScreenState extends State<OperationScreen> {
             )),
       ),
     );
+  }
+
+  void resetMarkerIcons() {
+    var updatedMarkers = _markers
+        .map(
+          (marker) => marker.copyWith(iconParam: _viewModel.defaultMarkerIcon),
+        )
+        .toSet();
+
+    // setState(() {
+    _markers = updatedMarkers;
+    // });
   }
 }

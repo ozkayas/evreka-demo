@@ -44,9 +44,9 @@ class OperationScreenViewModel extends GetxController {
   /// TODO: bu metot disari cikabilir, appconfig gibi bi yere
   initMarkerIcons() async {
     var markerIcon =
-        await getBytesFromAsset(AppConstant.urlHouseholdBinPng, 100);
+        await getBytesFromAsset(AppConstant.urlHouseholdBinPng, 110);
     defaultMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
-    markerIcon = await getBytesFromAsset(AppConstant.urlBatteryBinPng, 100);
+    markerIcon = await getBytesFromAsset(AppConstant.urlBatteryBinPng, 110);
     selectedMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
 
     // await BitmapDescriptor.fromAssetImage(
