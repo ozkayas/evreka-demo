@@ -59,67 +59,73 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (snapshot.data == ConnectivityStatus.Offline) {
               return OfflineDevice();
             } else {
-              return Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Stack(
-                  children: [
-                    Container(
-                      height: height,
-                      width: width,
-                      decoration: boxDecoration,
-                      child: Padding(
-                        padding: outerPadding,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Spacer(flex: 130),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.44,
-                                child: Image.asset(AppConstant.urlLogoPng)),
-                            Spacer(flex: 80),
-                            Text(AppConstant.loginScreenMessage,
-                                style: textTheme.bodyText2),
-                            Spacer(flex: 56),
-                            Form(
-                                child: Column(
-                              children: [
-                                textFormField(
-                                  controller: _usernameCtr,
-                                  suffixFunction: _usernameCtr.clear,
-                                  focusNode: _usernameFocus,
-                                  labelText: AppConstant.username,
-                                  textTheme: textTheme,
-                                ),
-                                SizedBox(height: 45),
-                                textFormField(
-                                    controller: _passwordCtr,
-                                    suffixFunction: () {
-                                      setState(() {
-                                        _isObscure = !_isObscure;
-                                      });
-                                    },
-                                    focusNode: _passwordFocus,
-                                    labelText: AppConstant.password,
+              return GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: Stack(
+                    children: [
+                      Container(
+                        height: height,
+                        width: width,
+                        decoration: boxDecoration,
+                        child: Padding(
+                          padding: outerPadding,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Spacer(flex: 130),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.44,
+                                  child: Image.asset(AppConstant.urlLogoPng)),
+                              Spacer(flex: 80),
+                              Text(AppConstant.loginScreenMessage,
+                                  style: textTheme.bodyText2),
+                              Spacer(flex: 56),
+                              Form(
+                                  child: Column(
+                                children: [
+                                  textFormField(
+                                    controller: _usernameCtr,
+                                    suffixFunction: _usernameCtr.clear,
+                                    focusNode: _usernameFocus,
+                                    labelText: AppConstant.username,
                                     textTheme: textTheme,
-                                    obscureText: _isObscure),
-                                SizedBox(height: 220),
-                                Center(
-                                  child: _loginButton(
-                                      handleLogin,
-                                      AppConstant.login,
-                                      _usernameCtr.text.isNotEmpty &&
-                                          _passwordCtr.text.isNotEmpty,
-                                      textTheme),
-                                )
-                              ],
-                            ))
-                          ],
+                                  ),
+                                  SizedBox(height: 45),
+                                  textFormField(
+                                      controller: _passwordCtr,
+                                      suffixFunction: () {
+                                        setState(() {
+                                          _isObscure = !_isObscure;
+                                        });
+                                      },
+                                      focusNode: _passwordFocus,
+                                      labelText: AppConstant.password,
+                                      textTheme: textTheme,
+                                      obscureText: _isObscure),
+                                  SizedBox(height: 220),
+                                  Center(
+                                    child: _loginButton(
+                                        handleLogin,
+                                        AppConstant.login,
+                                        _usernameCtr.text.isNotEmpty &&
+                                            _passwordCtr.text.isNotEmpty,
+                                        textTheme),
+                                  )
+                                ],
+                              ))
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    if (_loginError) buildErrorDialog(textTheme)
-                  ],
+                      if (_loginError) buildErrorDialog(textTheme)
+                    ],
+                  ),
                 ),
               );
             }

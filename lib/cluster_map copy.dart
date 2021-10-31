@@ -141,7 +141,7 @@ class MapSampleOriginalState extends State<MapSampleOriginal> {
 
     final img = await pictureRecorder.endRecording().toImage(size, size);
     final data = await img.toByteData(format: ImageByteFormat.png) as ByteData;
-
+    
     return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
   }
 }
